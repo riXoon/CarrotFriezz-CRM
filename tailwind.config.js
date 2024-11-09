@@ -8,7 +8,7 @@ export default {
     extend: {
       colors: {
         friezOrange: '#FE8235',
-        friezGreen: '#24D900',
+        friezGreen: '#1DAE00',
       }
     },
   },

@@ -3,19 +3,41 @@ import { FaRegChartBar } from 'react-icons/fa';
 import { FiPieChart } from 'react-icons/fi';
 import { IoCubeOutline, IoWalletOutline, IoChatbubblesOutline } from "react-icons/io5";
 import logo from '../../assets/friezLogo.png';
+import DashboardPage from '../Dashboard/DashboardPage';
 
 const SideBar = () => {
   const [activeLink, setActiveLink] = useState('Dashboard');
+  const [pageKey, setPageKey] = useState(0); // Key to force re-render on page change
 
   const handleLinkClick = (link) => {
     setActiveLink(link);
+    setPageKey(prevKey => prevKey + 1); // Increment key to force re-render
+  };
+
+  const renderContent = () => {
+
+    /* Function na ginamitan ko ng switch case para madetermine at maselect kung anong page yung isActive */
+    switch (activeLink) {
+      case 'Dashboard':
+        return <DashboardPage />;
+      case 'Analytics':
+        return <div>Analytics data and insights.</div>;
+      case 'Promotions':
+        return <div>Manage your Promotions here.</div>;
+      case 'Transactions':
+        return <div>View Transactions history and details.</div>;
+      case 'Support':
+        return <div>Get support and help.</div>;
+      default:
+        return <div>Select a tab to see the content.</div>;
+    }
   };
 
   return (
-    <div className="p-4 h-screen bg-gray-100 overflow-hidden">
-      <nav className="flex flex-col justify-start items-center bg-friezOrange w-56 h-[95%] p-4 rounded-lg shadow-lg overflow-x-hidden">
-        <img src={logo} alt="Carrot Friezz Logo" className="mb-4 right-6 relative" />
-        
+    <div className="flex h-screen bg-gray-100 p-4">
+      <div className="bg-friezOrange w-56 h-full p-4 rounded-lg shadow-lg flex flex-col items-center">
+        <img src={logo} alt="Carrot Friezz Logo" className="mb-4" />
+
         <ul className="text-md text-white flex flex-col gap-5 w-full">
           <li
             className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-all duration-300 pl-8 ${
@@ -63,7 +85,15 @@ const SideBar = () => {
             <span>Support</span>
           </li>
         </ul>
-      </nav>
+      </div>
+
+      {/* Content Area with Full Height and Transition */}
+      <div className="flex-1 h-full p-6 bg-white rounded-lg shadow-lg ml-4 overflow-auto">
+        {/* Wrapper for content with fade-in effect */}
+        <div key={pageKey} className="fade-in">
+          {renderContent()}
+        </div>
+      </div>
     </div>
   );
 };

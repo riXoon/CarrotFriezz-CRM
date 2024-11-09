@@ -4,11 +4,13 @@ import './index.css'
 
 import DashboardPage from './components/Dashboard/DashboardPage.jsx'
 import SideBar from './components/SideBar/SideBar.jsx'
+import Card1 from './components/Dashboard/Card.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
 
       <SideBar/>
+
 
   </StrictMode>,
 )
