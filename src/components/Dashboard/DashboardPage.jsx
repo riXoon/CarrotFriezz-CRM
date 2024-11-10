@@ -3,6 +3,7 @@ import { FiSearch, FiChevronDown } from 'react-icons/fi';
 import { FaUserCircle } from 'react-icons/fa';
 
 import Card from './Card';
+import SalesAnalytics from './SalesAnalytics';
 
 const DashboardPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -98,6 +99,22 @@ const DashboardPage = () => {
           linkText = "See Details" 
         />
 
+      </div>
+
+      {/* Sales Analuytics container to man */}
+
+      <div className="flex flex-col items-center w-6/12 p-6 bg-white rounded-lg shadow-lg border border-gray-200 mt-6">
+        <h1 className="text-left w-full text-xl font-semibold mb-4 uppercase">Sales Analytics</h1>
+
+        <div className="flex justify-center gap-8 text-gray-700 mb-6">
+          <p><span className="font-bold text-friezGreen">₱190.99k</span> Income</p>
+          <p><span className="font-bold text-friezGreen">1023</span> Sales</p>
+          <p><span className="font-bold text-friezGreen">721</span> Customers</p>
+        </div>
+
+        <div className="w-full p-4 bg-gray-100 rounded-lg shadow-md">
+          <SalesAnalytics />
+        </div>
       </div>
     </div>
   );
