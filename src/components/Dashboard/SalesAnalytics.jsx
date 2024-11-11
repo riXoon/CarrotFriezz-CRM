@@ -35,21 +35,21 @@ const SalesAnalytics = () => {
             {
               label: 'Sales',
               data: [300, 500, 200, 800, 1500, 700, 2500],
-              backgroundColor: 'rgba(34, 197, 94, 0.6)', // Green color for Sales
+              backgroundColor: 'rgba(29, 174, 0, 0.6)',
               borderColor: 'rgba(34, 197, 94, 1)',
               borderWidth: 1,
             },
             {
               label: 'Customers',
               data: [150, 300, 100, 400, 700, 350, 1200],
-              backgroundColor: 'rgba(252, 211, 77, 0.6)', // Yellow color for Customers
+              backgroundColor: 'rgba(233, 228, 97, 0.6)',
               borderColor: 'rgba(252, 211, 77, 1)',
               borderWidth: 1,
             },
             {
               label: 'Orders',
               data: [100, 200, 150, 250, 500, 300, 700],
-              backgroundColor: 'rgba(251, 146, 60, 0.6)', // Orange color for Orders
+              backgroundColor: 'rgba(254, 130, 53, 0.6)',
               borderColor: 'rgba(251, 146, 60, 1)',
               borderWidth: 1,
             },
@@ -96,7 +96,7 @@ const SalesAnalytics = () => {
   }, []);
 
   return (
-    <div ref={chartContainerRef} className="w-full h-72">
+    <div ref={chartContainerRef} className="w-full h-full">
       <canvas ref={canvasRef} className="w-full h-full" />
     </div>
   );
