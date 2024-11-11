@@ -7,8 +7,12 @@ export default {
   theme: {
     extend: {
       colors: {
-        friezOrange: '#FE8235',
+        friezOrange: { 
+          700: '#FE8235',
+          500: '#FFBA8F',
+        },
         friezGreen: '#1DAE00',
+        friezYellow: '#E9E461',
       }
     },
   },
