@@ -63,12 +63,12 @@ const SalesAnalytics = () => {
                 callback: (value) => `₱${value}`,
               },
               grid: {
-                display: false, // Remove y-axis grid lines
+                display: false,
               },
             },
             x: {
               grid: {
-                display: false, // Remove x-axis grid lines
+                display: false,
               },
             },
           },
@@ -77,7 +77,7 @@ const SalesAnalytics = () => {
           plugins: {
             legend: {
               display: true,
-              position: 'bottom', // Move legend to the bottom
+              position: 'bottom',
             },
           },
         },
