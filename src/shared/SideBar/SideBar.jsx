@@ -5,6 +5,7 @@ import { IoCubeOutline, IoWalletOutline, IoChatbubblesOutline } from "react-icon
 import logo from '../../assets/friezLogo.png';
 import DashboardPage from '../../components/Dashboard/DashboardPage'
 import AnalyticsPage from '../../components/Analytics/AnalyticsPage';
+import TransactionPage from '../../components/Transaction/TransactionPage';
 
 
 const SideBar = () => {
@@ -27,7 +28,7 @@ const SideBar = () => {
       case 'Promotions':
         return <div>Manage your Promotions here.</div>;
       case 'Transactions':
-        return <div>View Transactions history and details.</div>;
+        return <div><TransactionPage /> </div>;
       case 'Support':
         return <div>Get support and help.</div>;
       default:
