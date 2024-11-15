@@ -1,26 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaRegChartBar } from 'react-icons/fa';
 import { FiPieChart } from 'react-icons/fi';
 import { IoCubeOutline, IoWalletOutline, IoChatbubblesOutline } from "react-icons/io5";
 import logo from '../../assets/friezLogo.png';
-import DashboardPage from '../../components/Dashboard/DashboardPage'
+import DashboardPage from '../../components/Dashboard/DashboardPage';
 import AnalyticsPage from '../../components/Analytics/AnalyticsPage';
 import TransactionPage from '../../components/Transaction/TransactionPage';
 import SupportPage from '../../components/Support/SupportPage';
 
-
 const SideBar = () => {
-  const [activeLink, setActiveLink] = useState('Dashboard');
+  const [activeLink, setActiveLink] = useState(() => {
+    // Retrieve the active link from localStorage, default to 'Dashboard'
+    return localStorage.getItem('activeLink') || 'Dashboard';
+  });
+
   const [pageKey, setPageKey] = useState(0); // Key to force re-render on page change
+
+  useEffect(() => {
+    // Update localStorage whenever activeLink changes
+    localStorage.setItem('activeLink', activeLink);
+  }, [activeLink]);
 
   const handleLinkClick = (link) => {
     setActiveLink(link);
-    setPageKey(prevKey => prevKey + 1); // Increment key to force re-render
+    setPageKey((prevKey) => prevKey + 1); // Increment key to force re-render
   };
 
   const renderContent = () => {
-
-    /* Function na ginamitan ko ng switch case para madetermine at maselect kung anong page yung isActive */
     switch (activeLink) {
       case 'Dashboard':
         return <DashboardPage />;
@@ -29,7 +35,7 @@ const SideBar = () => {
       case 'Promotions':
         return <div>Manage your Promotions here.</div>;
       case 'Transactions':
-        return <div><TransactionPage /> </div>;
+        return <div><TransactionPage /></div>;
       case 'Support':
         return <div><SupportPage /></div>;
       default:
