@@ -25,145 +25,13 @@ const Emails = () => {
       isSelected: false,
       isFavorite: false,
     },
-    {
-      id: 3,
-      sender: 'Riva Mae S. Boongaling',
-      subject: 'I am not satisfied with the service, I demand a refund NOW!...',
-      content: 'I am not satisfied with the service, I demand a refund NOW!...',
-      email: 'rivamaesboongaling@gmail.com',
-      phone: '09458997821',
-      time: '1:18 PM',
-      isSelected: false,
-      isFavorite: false,
-    },
-    {
-      id: 4,
-      sender: 'Chino Pasia',
-      subject: 'wrong item. need refund. plz fix this thx',
-      content: 'wrong item. need refund. plz fix this thx',
-      email: 'chinopasia@example.com',
-      phone: '0987654321',
-      time: '2:45 PM',
-      isSelected: false,
-      isFavorite: false,
-    },
-    {
-      id: 5,
-      sender: 'Riva Mae S. Boongaling',
-      subject: 'I am not satisfied with the service, I demand a refund NOW!...',
-      content: 'I am not satisfied with the service, I demand a refund NOW!...',
-      email: 'rivamaesboongaling@gmail.com',
-      phone: '09458997821',
-      time: '1:18 PM',
-      isSelected: false,
-      isFavorite: false,
-    },
-    {
-      id: 6,
-      sender: 'Chino Pasia',
-      subject: 'wrong item. need refund. plz fix this thx',
-      content: 'wrong item. need refund. plz fix this thx',
-      email: 'chinopasia@example.com',
-      phone: '0987654321',
-      time: '2:45 PM',
-      isSelected: false,
-      isFavorite: false,
-    },
-    {
-      id: 7,
-      sender: 'Riva Mae S. Boongaling',
-      subject: 'I am not satisfied with the service, I demand a refund NOW!...',
-      content: 'I am not satisfied with the service, I demand a refund NOW!...',
-      email: 'rivamaesboongaling@gmail.com',
-      phone: '09458997821',
-      time: '1:18 PM',
-      isSelected: false,
-      isFavorite: false,
-    },
-    {
-      id: 8,
-      sender: 'Chino Pasia',
-      subject: 'wrong item. need refund. plz fix this thx',
-      content: 'wrong item. need refund. plz fix this thx',
-      email: 'chinopasia@example.com',
-      phone: '0987654321',
-      time: '2:45 PM',
-      isSelected: false,
-      isFavorite: false,
-    },
-    {
-      id: 9,
-      sender: 'Riva Mae S. Boongaling',
-      subject: 'I am not satisfied with the service, I demand a refund NOW!...',
-      content: 'I am not satisfied with the service, I demand a refund NOW!...',
-      email: 'rivamaesboongaling@gmail.com',
-      phone: '09458997821',
-      time: '1:18 PM',
-      isSelected: false,
-      isFavorite: false,
-    },
-    {
-      id: 10,
-      sender: 'Chino Pasia',
-      subject: 'wrong item. need refund. plz fix this thx',
-      content: 'wrong item. need refund. plz fix this thx',
-      email: 'chinopasia@example.com',
-      phone: '0987654321',
-      time: '2:45 PM',
-      isSelected: false,
-      isFavorite: false,
-    },
-    {
-      id: 11,
-      sender: 'Riva Mae S. Boongaling',
-      subject: 'I am not satisfied with the service, I demand a refund NOW!...',
-      content: 'I am not satisfied with the service, I demand a refund NOW!...',
-      email: 'rivamaesboongaling@gmail.com',
-      phone: '09458997821',
-      time: '1:18 PM',
-      isSelected: false,
-      isFavorite: false,
-    },
-    {
-      id: 12,
-      sender: 'Chino Pasia',
-      subject: 'wrong item. need refund. plz fix this thx',
-      content: 'wrong item. need refund. plz fix this thx',
-      email: 'chinopasia@example.com',
-      phone: '0987654321',
-      time: '2:45 PM',
-      isSelected: false,
-      isFavorite: false,
-    },
-    {
-      id: 13,
-      sender: 'Riva Mae S. Boongaling',
-      subject: 'I am not satisfied with the service, I demand a refund NOW!...',
-      content: 'I am not satisfied with the service, I demand a refund NOW!...',
-      email: 'rivamaesboongaling@gmail.com',
-      phone: '09458997821',
-      time: '1:18 PM',
-      isSelected: false,
-      isFavorite: false,
-    },
-    {
-      id: 14,
-      sender: 'Chino Pasia',
-      subject: 'wrong item. need refund. plz fix this thx',
-      content: 'wrong item. need refund. plz fix this thx',
-      email: 'chinopasia@example.com',
-      phone: '0987654321',
-      time: '2:45 PM',
-      isSelected: false,
-      isFavorite: false,
-    },
-   
   ]);
 
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [reply, setReply] = useState('');
   const [showReplyBox, setShowReplyBox] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // Loading state for the button
 
   const handleSelectMessage = (message) => {
     setSelectedMessage(message);
@@ -173,9 +41,13 @@ const Emails = () => {
 
   const handleSendReply = () => {
     if (showReplyBox) {
-      alert(`Reply sent: ${reply}`);
-      setReply('');
-      setShowReplyBox(false); // Hide reply box after sending
+      setIsLoading(true); // Start loading when reply is sent
+      setTimeout(() => {
+        alert(`Reply sent: ${reply}`);
+        setReply('');
+        setShowReplyBox(false);
+        setIsLoading(false); // Stop loading after a brief delay (simulating sending)
+      }, 2000); // Simulate sending for 2 seconds
     } else {
       setShowReplyBox(true); // Show reply box if it’s not already visible
     }
@@ -207,7 +79,7 @@ const Emails = () => {
   };
 
   return (
-    <div className="flex h-[33rem] bg-gray-50 text-gray-800">
+    <div className="flex h-screen bg-gray-50 text-gray-800">
       {selectedMessage === null ? (
         // List View
         <div className="w-full p-6">
@@ -220,7 +92,7 @@ const Emails = () => {
             />
             <FaTrash className="text-green-500 cursor-pointer hover:text-red-500" />
           </div>
-          <div className="max-h-[30rem] overflow-y-auto">
+          <div className="max-h-96 overflow-y-auto">
             {messages.map((message) => (
               <div
                 key={message.id}
@@ -228,7 +100,7 @@ const Emails = () => {
               >
                 <input
                   type="checkbox"
-                  className="form-checkbox h-5 w-5 text-green-500 mr-4 "
+                  className="form-checkbox h-5 w-5 text-green-500 mr-4"
                   checked={message.isSelected}
                   onChange={(e) => {
                     e.stopPropagation();
@@ -292,10 +164,19 @@ const Emails = () => {
               />
             )}
             <button
-              className="mt-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-200"
+              className={`mt-2 px-4 py-2 ${
+                isLoading
+                  ? 'bg-gray-500 cursor-wait'
+                  : 'bg-green-500 hover:bg-green-600'
+              } text-white rounded-lg transition duration-300`}
               onClick={handleSendReply}
+              disabled={isLoading} // Disable button when loading
             >
-              {showReplyBox ? 'Send Reply' : 'Reply'}
+              {isLoading ? (
+                <span>Sending...</span>
+              ) : (
+                <span>{showReplyBox ? 'Send Reply' : 'Reply'}</span>
+              )}
             </button>
           </div>
         </div>
