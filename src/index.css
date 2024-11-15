@@ -28,25 +28,103 @@
 }
 
 /* modal.css */
+/* Confirmation Modal Styling */
 .modal-enter {
   opacity: 0;
   transform: scale(0.9);
 }
-
 .modal-enter-active {
   opacity: 1;
   transform: scale(1);
-  transition: opacity 300ms, transform 300ms;
+  transition: opacity 300ms ease, transform 300ms ease;
 }
-
 .modal-exit {
   opacity: 1;
   transform: scale(1);
 }
-
 .modal-exit-active {
   opacity: 0;
   transform: scale(0.9);
-  transition: opacity 300ms, transform 300ms;
+  transition: opacity 300ms ease, transform 300ms ease;
 }
+
+/* Confirmation Modal Specific */
+.modal-content {
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  text-align: center;
+  max-width: 500px;
+  margin: 0 auto;
+  animation: fadeInUp 0.5s ease-in-out;
+}
+.modal-content h2 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #2F855A; /* Friez Green */
+  margin-bottom: 20px;
+}
+.modal-content p {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 30px;
+}
+.modal-content button {
+  background-color: #2F855A; /* Friez Green */
+  color: white;
+  padding: 12px 24px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.modal-content button:hover {
+  background-color: #276749; /* Darker green */
+}
+
+/* Loading State Styling */
+.loading-overlay {
+  background-color: rgba(0, 0, 0, 0.6);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #4CAF50; /* Friez Green */
+  border-radius: 50%;
+  animation: spin 1.5s linear infinite;
+}
+
+.spinner-text {
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+  margin-top: 20px;
+}
+
+/* Spin animation for the loader */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Fade in animation for the modal */
+@keyframes fadeInUp {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+
 
