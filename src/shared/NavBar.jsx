@@ -54,7 +54,7 @@ const [searchQuery, setSearchQuery] = useState('');
         <div className="relative">
             <button onClick={toggleDropdown} className="flex items-center text-gray-600">
             <FaUserCircle size={24} className="text-gray-600" />
-            <span className="ml-2 text-gray-800 font-medium">User</span>
+            <span className="ml-2 text-gray-800 font-medium">Admin</span>
             <FiChevronDown size={16} className="ml-1 text-gray-600" />
             </button>
 

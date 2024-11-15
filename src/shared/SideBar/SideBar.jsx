@@ -6,6 +6,7 @@ import logo from '../../assets/friezLogo.png';
 import DashboardPage from '../../components/Dashboard/DashboardPage'
 import AnalyticsPage from '../../components/Analytics/AnalyticsPage';
 import TransactionPage from '../../components/Transaction/TransactionPage';
+import SupportPage from '../../components/Support/SupportPage';
 
 
 const SideBar = () => {
@@ -30,7 +31,7 @@ const SideBar = () => {
       case 'Transactions':
         return <div><TransactionPage /> </div>;
       case 'Support':
-        return <div>Get support and help.</div>;
+        return <div><SupportPage /></div>;
       default:
         return <div>Select a tab to see the content.</div>;
     }
