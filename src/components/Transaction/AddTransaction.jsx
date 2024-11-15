@@ -1,24 +1,34 @@
 import React, { useState } from 'react';
 import { CSSTransition } from 'react-transition-group';
 
-const AddTransaction = () => {
+const AddTransaction = ({ onSave }) => {
     const [showModal, setShowModal] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [showConfirmation, setShowConfirmation] = useState(false);
+    const [confirmationMessage, setConfirmationMessage] = useState('');
     const [selectedItems, setSelectedItems] = useState([]);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [totalPrice, setTotalPrice] = useState(0);
-    
-    // Sample products with prices
+
+    const [formData, setFormData] = useState({
+        name: '',
+        items: [],
+        payment: '',
+        promo: '',
+        salesperson: '',
+        totalPrice: 0,
+    });
+
     const items = [
-        { name: 'Carrot Friezz', price: 25.00 },
-        { name: 'Friezz Carrot', price: 35.50 },
-        { name: 'Carrot Friezz', price: 25.75 },
-        { name: 'Friezz Carrot', price: 65.00 },
+        { name: 'Zzuper Mini Friezz', price: 59.00 },
+        { name: 'Mini Friezz', price: 149.00 },
+        { name: 'Midi Friezz', price: 189.00 },
+        { name: 'Maxi Friezz', price: 229.00 },
+        
     ];
 
-    // Toggle dropdown
     const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
 
-    // Select or deselect an item
     const handleItemClick = (item) => {
         const isSelected = selectedItems.find(selected => selected.name === item.name);
         let newSelectedItems;
@@ -31,19 +41,65 @@ const AddTransaction = () => {
 
         setSelectedItems(newSelectedItems);
 
-        // Update total price
         const newTotalPrice = newSelectedItems.reduce((acc, selected) => acc + selected.price, 0);
         setTotalPrice(newTotalPrice.toFixed(2));
     };
 
-    // Remove an item from selection
     const handleRemoveItem = (itemName) => {
         const newSelectedItems = selectedItems.filter(item => item.name !== itemName);
         setSelectedItems(newSelectedItems);
 
-        // Update total price
         const newTotalPrice = newSelectedItems.reduce((acc, selected) => acc + selected.price, 0);
         setTotalPrice(newTotalPrice.toFixed(2));
+    };
+
+    const handleSave = () => {
+        // Validate form fields
+        if (!formData.name || !selectedItems.length || !formData.payment || !formData.salesperson) {
+            setIsLoading(true);
+            setShowModal(false);
+            
+            // Set the failure message based on missing fields
+            let failureMessage = 'Transaction Failed: ';
+            if (!formData.name) failureMessage += 'Customer Name is required. ';
+            if (!selectedItems.length) failureMessage += 'At least one item must be selected. ';
+            if (!formData.payment) failureMessage += 'Payment Method is required. ';
+            if (!formData.salesperson) failureMessage += 'Salesperson is required. ';
+
+            setTimeout(() => {
+                setIsLoading(false);
+                setShowConfirmation(true);
+                setConfirmationMessage(failureMessage);
+            }, 2000);
+
+            return;
+        }
+
+        // Proceed with the transaction if all required fields are valid
+        setIsLoading(true);
+        setShowModal(false);
+
+        setTimeout(() => {
+            setIsLoading(false);
+            setShowConfirmation(true);
+            setConfirmationMessage('Transaction Successful!');
+
+            const currentDate = new Date().toLocaleDateString(); // Automatically record current date
+
+            if (onSave) {
+                const transaction = {
+                    orderNo: Math.floor(Math.random() * 1000),  // Random order number
+                    name: formData.name,
+                    items: `${selectedItems.length} items`,
+                    price: `₱${totalPrice}`,
+                    payment: formData.payment,
+                    promo: formData.promo,
+                    salesperson: formData.salesperson,
+                    date: currentDate,  // Adding the current date
+                };
+                onSave(transaction);
+            }
+        }, 2000);
     };
 
     const handleAddTransactionClick = () => {
@@ -52,6 +108,10 @@ const AddTransaction = () => {
 
     const handleCloseModal = () => {
         setShowModal(false);
+    };
+
+    const handleCloseConfirmation = () => {
+        setShowConfirmation(false);
     };
 
     return (
@@ -63,7 +123,7 @@ const AddTransaction = () => {
                 + Add Transaction
             </button>
 
-            {/* Modal with CSSTransition */}
+            {/* Transaction Modal */}
             <CSSTransition
                 in={showModal}
                 timeout={300}
@@ -74,9 +134,13 @@ const AddTransaction = () => {
                     <div className="bg-white rounded-lg shadow-xl p-6 w-[60%]">
                         <h2 className="text-2xl font-semibold text-center mb-4">New Transaction</h2>
                         <form className="space-y-4">
-                            {/* Full-width fields */}
-                            <input className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-friezGreen" placeholder="Customer Name" />
-                            <input type="date" className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-friezGreen" placeholder="Date" />
+                            {/* Customer Name */}
+                            <input 
+                                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-friezGreen" 
+                                placeholder="Customer Name" 
+                                value={formData.name} 
+                                onChange={(e) => setFormData({ ...formData, name: e.target.value })} 
+                            />
                             
                             {/* Multi-select dropdown for Product Name */}
                             <div className="relative">
@@ -107,17 +171,16 @@ const AddTransaction = () => {
                                             ))}
                                         </div>
                                     )}
-                                    <span className="ml-2 text-gray-500">&#9662;</span> {/* Dropdown arrow icon */}
+                                    <span className="ml-2 text-gray-500">&#9662;</span>
                                 </div>
 
-                                {/* Dropdown menu */}
                                 {isDropdownOpen && (
-                                    <div className="absolute z-10 bg-white border rounded-lg mt-1 w-full max-h-40 overflow-y-auto">
+                                    <div className="absolute top-full left-0 right-0 mt-2 bg-white shadow-md rounded-lg z-10">
                                         {items.map((item, index) => (
                                             <div
                                                 key={index}
+                                                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                                                 onClick={() => handleItemClick(item)}
-                                                className={`p-2 hover:bg-gray-200 cursor-pointer ${selectedItems.find(selected => selected.name === item.name) ? 'bg-gray-100' : ''}`}
                                             >
                                                 {item.name} - ₱{item.price.toFixed(2)}
                                             </div>
@@ -125,40 +188,95 @@ const AddTransaction = () => {
                                     </div>
                                 )}
                             </div>
-                            
-                            {/* Displaying the total price in the Total Amount field */}
-                            <div className="grid grid-cols-2 gap-4">
-                                <input 
-                                    className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-friezGreen" 
-                                    placeholder="Total Amount" 
-                                    value={`$${totalPrice}`} 
-                                    readOnly 
-                                />
-                                <select className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-friezGreen">
-                                    <option>Payment Method</option>
-                                    <option>Cash</option>
-                                    <option>Gcash</option>
-                                    <option>Paymaya</option>
-                                    <option>Maya na pay</option>
-                                </select>
-                            </div>
 
-                            {/* Full-width fields */}
-                            <input className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-friezGreen" placeholder="Promo" />
-                            <input className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-friezGreen" placeholder="Salesperson" />
-                        </form>
-                        <div className="flex justify-end mt-6">
-                            <button 
-                                onClick={handleCloseModal} 
-                                className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg mr-2 hover:bg-gray-400"
+                            {/* Display Total Price */}
+                            <input 
+                                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-friezGreen" 
+                                placeholder="Total Amount" 
+                                value={`₱${totalPrice}`} 
+                                readOnly 
+                            />
+
+                            {/* Payment Method Dropdown */}
+                            <select 
+                                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-friezGreen" 
+                                value={formData.payment} 
+                                onChange={(e) => setFormData({ ...formData, payment: e.target.value })}
                             >
-                                Cancel
-                            </button>
+                                <option>Payment Method</option>
+                                <option>Cash</option>
+                                <option>Gcash</option>
+                                <option>Paymaya</option>
+                                <option>Maya na pay</option>
+                            </select>
+
+                            {/* Promo Code */}
+                            <input 
+                                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-friezGreen" 
+                                placeholder="Promo Code" 
+                                value={formData.promo} 
+                                onChange={(e) => setFormData({ ...formData, promo: e.target.value })} 
+                            />
+
+                            {/* Salesperson */}
+                            <input 
+                                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-friezGreen" 
+                                placeholder="Salesperson" 
+                                value={formData.salesperson} 
+                                onChange={(e) => setFormData({ ...formData, salesperson: e.target.value })} 
+                            />
+                            
+                            <div className="flex gap-4 justify-end">
+                                <button
+                                    onClick={handleCloseModal}
+                                    className="bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleSave}
+                                    className="bg-friezGreen text-white px-4 py-2 rounded-lg hover:bg-green-600"
+                                >
+                                    Save Transaction
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </CSSTransition>
+
+            {/* Loading Modal */}
+            <CSSTransition
+                in={isLoading}
+                timeout={300}
+                classNames="modal"
+                unmountOnExit
+            >
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                    <div className="bg-white rounded-lg shadow-xl p-6">
+                        <div className="flex justify-center">
+                            <div className="animate-spin w-10 h-10 border-4 border-t-transparent border-friezGreen rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+            </CSSTransition>
+
+            {/* Confirmation Modal */}
+            <CSSTransition
+                in={showConfirmation}
+                timeout={300}
+                classNames="modal"
+                unmountOnExit
+            >
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                    <div className="bg-white rounded-lg shadow-xl p-6 w-[60%]">
+                        <h2 className="text-2xl font-semibold text-center mb-4">{confirmationMessage}</h2>
+                        <div className="flex justify-center">
                             <button 
-                                type="submit" 
+                                onClick={handleCloseConfirmation} 
                                 className="bg-friezGreen text-white px-4 py-2 rounded-lg hover:bg-green-600"
                             >
-                                Save
+                                OK
                             </button>
                         </div>
                     </div>
