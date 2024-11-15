@@ -53,7 +53,9 @@ const AddTransaction = ({ onSave }) => {
         setTotalPrice(newTotalPrice.toFixed(2));
     };
 
-    const handleSave = () => {
+    const handleSave = (e) => {
+
+        e.preventDefault();
         // Validate form fields
         if (!formData.name || !selectedItems.length || !formData.payment || !formData.salesperson) {
             setIsLoading(true);
