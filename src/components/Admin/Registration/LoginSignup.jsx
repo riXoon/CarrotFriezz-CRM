@@ -1,17 +1,18 @@
 import React, { useState } from "react";
-import { FaEye, FaEyeSlash } from "react-icons/fa"; // Correct icons from react-icons
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import carrot1 from "../../../assets/carrot1.png";
 import carrot2 from "../../../assets/carrot2.png";
 import { useNavigate } from "react-router-dom";
 
 function LoginSignup() {
   const [isSignUp, setIsSignUp] = useState(false);
-  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
-  const [email, setEmail] = useState(""); // State for email
-  const [password, setPassword] = useState(""); // State for password
-  const [confirmPassword, setConfirmPassword] = useState(""); // State for confirm password
-  const [role, setRole] = useState("customer"); // State for user role
-  const navigate = useNavigate(); // For redirecting to main page
+  const [showPassword, setShowPassword] = useState(false);
+  const [fullName, setFullName] = useState(""); // State for full name
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [role, setRole] = useState("customer");
+  const navigate = useNavigate();
 
   const toggleForm = () => {
     setIsSignUp(!isSignUp);
@@ -23,35 +24,29 @@ function LoginSignup() {
 
   const handleSignUp = (e) => {
     e.preventDefault();
-    // Save the user's data in localStorage
     if (password !== confirmPassword) {
       alert("Passwords do not match!");
       return;
     }
 
-    const userData = { email, password, role };
+    const userData = { fullName, email, password, role };
     localStorage.setItem("user", JSON.stringify(userData));
     alert("Sign-up successful! You can now log in.");
-    setIsSignUp(false); // Switch to login form
+    setIsSignUp(false);
   };
 
   const handleLogin = (e) => {
     e.preventDefault();
-  
-    // Get the data from localStorage
     const storedUser = JSON.parse(localStorage.getItem("user"));
-  
+
     if (!storedUser) {
       alert("No user found. Please sign up first.");
       return;
     }
-  
-    // Check credentials and role
+
     if (email === storedUser.email && password === storedUser.password) {
       if (role === storedUser.role) {
         alert("Login successful!");
-  
-        // Redirect based on role
         if (role === "admin") {
           navigate("/AdminDashboard");
         } else if (role === "customer") {
@@ -64,12 +59,10 @@ function LoginSignup() {
       alert("Invalid email or password.");
     }
   };
-  
 
   return (
     <div className="relative h-screen w-full bg-gray-100 overflow-hidden">
       <div className="relative h-full w-full">
-        {/* Left Section */}
         <div
           className={`absolute h-full w-1/2 bg-white flex items-center justify-center transition-transform duration-700 ease-in-out ${
             isSignUp ? "translate-x-full" : "translate-x-0"
@@ -87,7 +80,6 @@ function LoginSignup() {
           </div>
         </div>
 
-        {/* Right Section */}
         <div
           className={`absolute h-full w-1/2 bg-orange-500 flex items-center justify-center right-0 transition-transform duration-700 ease-in-out ${
             isSignUp ? "-translate-x-full" : "translate-x-0"
@@ -95,12 +87,23 @@ function LoginSignup() {
         >
           <div className="relative z-10 w-3/4">
             {isSignUp ? (
-              // Sign-Up Form
               <div className="border p-8 bg-white rounded-xl shadow-xl">
                 <h2 className="text-orange-500 text-3xl font-bold text-center">
                   Sign Up
                 </h2>
                 <form onSubmit={handleSignUp}>
+                  <div className="mb-4">
+                    <label className="block text-gray-700 text-sm mb-2">
+                      Full Name
+                    </label>
+                    <input
+                      type="text"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      className="w-full border rounded-lg px-3 py-2"
+                      placeholder="Enter your full name"
+                    />
+                  </div>
                   <div className="mb-4">
                     <label className="block text-gray-700 text-sm mb-2">
                       Email
@@ -138,22 +141,13 @@ function LoginSignup() {
                     <label className="block text-gray-700 text-sm mb-2">
                       Confirm Password
                     </label>
-                    <div className="relative">
-                      <input
-                        type={showPassword ? "text" : "password"}
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        className="w-full border rounded-lg px-3 py-2"
-                        placeholder="Confirm your password"
-                      />
-                      <button
-                        type="button"
-                        onClick={togglePasswordVisibility}
-                        className="absolute right-3 top-2 text-gray-500"
-                      >
-                        {showPassword ? <FaEyeSlash className="w-5 h-5" /> : <FaEye className="w-5 h-5" />}
-                      </button>
-                    </div>
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      className="w-full border rounded-lg px-3 py-2"
+                      placeholder="Confirm your password"
+                    />
                   </div>
                   <div className="mb-4">
                     <label className="block text-gray-700 text-sm mb-2">
@@ -186,7 +180,6 @@ function LoginSignup() {
                 </p>
               </div>
             ) : (
-              // Login Form
               <div className="border p-8 bg-white rounded-xl shadow-lg">
                 <h2 className="text-orange-500 text-3xl font-bold text-center mb-6">
                   Log In
@@ -224,8 +217,8 @@ function LoginSignup() {
                         {showPassword ? <FaEyeSlash className="w-5 h-5" /> : <FaEye className="w-5 h-5" />}
                       </button>
                     </div>
-
-                    <div className="mb-4">
+                  </div>
+                  <div className="mb-4">
                     <label className="block text-gray-700 text-sm mb-2">
                       Role
                     </label>
@@ -238,7 +231,6 @@ function LoginSignup() {
                       <option value="customer">Customer</option>
                     </select>
                   </div>
-                  </div>
                   <button
                     type="submit"
                     className="w-full bg-green-500 text-white py-2 rounded-lg font-bold hover:bg-green-600 transition"
@@ -247,7 +239,7 @@ function LoginSignup() {
                   </button>
                 </form>
                 <p className="mt-4 text-center text-sm text-gray-600">
-                  Don’t have an account?{" "}
+                  Don't have an account?{" "}
                   <span
                     className="text-orange-500 font-bold cursor-pointer hover:underline"
                     onClick={toggleForm}
