@@ -3,10 +3,10 @@ import { FaRegChartBar } from 'react-icons/fa';
 import { FiPieChart } from 'react-icons/fi';
 import { IoCubeOutline, IoWalletOutline, IoChatbubblesOutline } from "react-icons/io5";
 import logo from '../../assets/friezLogo.png';
-import DashboardPage from '../../components/Dashboard/DashboardPage';
-import AnalyticsPage from '../../components/Analytics/AnalyticsPage';
-import TransactionPage from '../../components/Transaction/TransactionPage';
-import SupportPage from '../../components/Support/SupportPage';
+import DashboardPage from '../../components/Admin/Dashboard/DashboardPage';
+import AnalyticsPage from '../../components/Admin/Analytics/AnalyticsPage';
+import TransactionPage from '../../components/Admin/Transaction/TransactionPage';
+import SupportPage from '../../components/Admin/Support/SupportPage';
 
 const SideBar = () => {
   const [activeLink, setActiveLink] = useState(() => {
@@ -32,8 +32,6 @@ const SideBar = () => {
         return <DashboardPage />;
       case 'Analytics':
         return <div><AnalyticsPage /></div>;
-      case 'Promotions':
-        return <div>Manage your Promotions here.</div>;
       case 'Transactions':
         return <div><TransactionPage /></div>;
       case 'Support':
@@ -66,15 +64,6 @@ const SideBar = () => {
           >
             <FaRegChartBar size={24} />
             <span>Analytics</span>
-          </li>
-          <li
-            className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-all duration-300 pl-8 ${
-              activeLink === 'Promotions' ? 'bg-friezGreen' : 'hover:bg-friezGreen'
-            }`}
-            onClick={() => handleLinkClick('Promotions')}
-          >
-            <IoCubeOutline size={24} />
-            <span>Promotions</span>
           </li>
           <li
             className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-all duration-300 pl-8 ${

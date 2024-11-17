@@ -1,16 +1,18 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter, Route, Routes } from 'react-router-dom'; // Add BrowserRouter import
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './index.css';
 import SideBar from './shared/SideBar/SideBar';
-import LoginSignup from './components/Login/Signup/LoginSignup';
+import LoginSignup from './components/Admin/Registration/LoginSignup';
+import CustomerPage from './components/Customer/Customer/CustomerPage';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter> {/* Wrap your Routes with BrowserRouter */}
       <Routes>
         <Route path="/" element={<LoginSignup />} />
-        <Route path="/main" element={<SideBar />} />
+        <Route path="/AdminDashboard" element={<SideBar />} />
+        <Route path="/Customer" element={<CustomerPage />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>
