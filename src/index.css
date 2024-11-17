@@ -125,6 +125,44 @@
   transition: transform 0.7s ease-in-out;
 } 
 
+/* Heart clicked */
+@keyframes beat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+}
+
+.animate-beat {
+  animation: beat 0.3s ease-in-out;
+}
+
+/* Modal starts off-screen and slides into view */
+/* Initial state - hidden (slide down) */
+.customerModal {
+  transform: translateY(100%);  /* Starts off below the screen */
+  opacity: 0;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+/* Modal slide-up transition (when opening) */
+.customerModal.slide-up {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Modal slide-down transition (when closing) */
+.customerModal.slide-down {
+  transform: translateY(100%);
+  opacity: 0;
+}
+
+
+
+
+
 
 
 
