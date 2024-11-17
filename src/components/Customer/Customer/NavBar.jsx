@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { FaHome, FaBell, FaUserCircle } from 'react-icons/fa';
-import { MdKeyboardArrowDown } from 'react-icons/md'; // Importing the down arrow icon
-import Carrot1 from '../../../assets/Carrot1.png';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
+import { MdKeyboardArrowDown } from 'react-icons/md';
+
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -24,7 +24,6 @@ const NavBar = () => {
       <nav className="flex items-center justify-between px-6 py-4">
         {/* Left Side: Logo */}
         <div className="flex items-center space-x-3">
-          <img src={Carrot1} alt="Carrot Logo" className="h-10 w-10" />
           <h1 className="text-white font-bold text-2xl">FriseUp</h1>
         </div>
 
