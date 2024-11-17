@@ -49,7 +49,6 @@ const DashboardPage = () => {
           subTitle = "14, 892"
           showlinkText = {false} 
         />
-
         <Card
           title = "Customers"
           subTitle = "100,000"
