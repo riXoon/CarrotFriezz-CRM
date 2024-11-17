@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FiSearch, FiChevronDown } from 'react-icons/fi';
 import { FaUserCircle } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
+import { useNavigate } from 'react-router-dom';
 
 const NavBar = () => {
   const [searchQuery, setSearchQuery] = useState('');
