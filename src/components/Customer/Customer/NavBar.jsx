@@ -1,23 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaHome, FaBell, FaUserCircle } from 'react-icons/fa';
 import { MdKeyboardArrowDown } from 'react-icons/md';
-
 import { useNavigate } from 'react-router-dom';
-
-
 
 const NavBar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const navigate = useNavigate(); // Initialize navigate
+  const [fullName, setFullName] = useState("John Doe"); // Default name
+  const navigate = useNavigate();
 
-    const handleLogout = () => {
-        // Clear user data from localStorage to simulate logout
-        localStorage.removeItem("user");
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (storedUser && storedUser.fullName) {
+      setFullName(storedUser.fullName);
+    }
+  }, []);
 
-        // Redirect to the login page
-        alert('Logging out');
-        navigate('/'); // This will redirect to the login page ("/")
-    };
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    alert('Logging out');
+    navigate('/');
+  };
+
+  const handleHome = () => {
+    navigate('/Customer');
+  };
 
   return (
     <div className="bg-orange-500 shadow-md">
@@ -33,6 +39,7 @@ const NavBar = () => {
           <button
             className="text-white text-2xl hover:text-gray-200 transition duration-200"
             title="Home"
+            onClick={handleHome}
           >
             <FaHome />
           </button>
@@ -56,8 +63,8 @@ const NavBar = () => {
               className="flex items-center space-x-2 text-white hover:text-gray-200 focus:outline-none transition duration-200"
             >
               <FaUserCircle className="text-3xl" />
-              <span className="font-medium text-lg">John Doe</span>
-              <MdKeyboardArrowDown className="text-xl" /> {/* Down arrow icon */}
+              <span className="font-medium text-lg">{fullName}</span>
+              <MdKeyboardArrowDown className="text-xl" />
             </button>
 
             {/* Dropdown Menu */}
