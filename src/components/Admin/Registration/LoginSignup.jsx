@@ -7,11 +7,13 @@ import { useNavigate } from "react-router-dom";
 function LoginSignup() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [fullName, setFullName] = useState(""); // State for full name
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [role, setRole] = useState("customer");
+  const [modalMessage, setModalMessage] = useState("");
+  const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
   const toggleForm = () => {
@@ -22,46 +24,93 @@ function LoginSignup() {
     setShowPassword(!showPassword);
   };
 
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
   const handleSignUp = (e) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
-      alert("Passwords do not match!");
+  
+    // Check if fields are empty
+    if (!fullName || !email || !password || !confirmPassword || !role) {
+      setModalMessage("Please fill in all the fields.");
+      setShowModal(true);
       return;
     }
-
+  
+    // Check if passwords match
+    if (password !== confirmPassword) {
+      setModalMessage("Passwords do not match!");
+      setShowModal(true);
+      return;
+    }
+  
     const userData = { fullName, email, password, role };
     localStorage.setItem("user", JSON.stringify(userData));
-    alert("Sign-up successful! You can now log in.");
+    setModalMessage("Sign-up successful! You can now log in.");
+    setShowModal(true);
     setIsSignUp(false);
   };
-
+  
   const handleLogin = (e) => {
     e.preventDefault();
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-
-    if (!storedUser) {
-      alert("No user found. Please sign up first.");
+  
+    // Check if email and password are provided
+    if (!email || !password) {
+      setModalMessage("Please enter both email and password.");
+      setShowModal(true);
       return;
     }
-
+  
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+  
+    if (!storedUser) {
+      setModalMessage("No user found. Please sign up first.");
+      setShowModal(true);
+      return;
+    }
+  
     if (email === storedUser.email && password === storedUser.password) {
       if (role === storedUser.role) {
-        alert("Login successful!");
-        if (role === "admin") {
-          navigate("/AdminDashboard");
-        } else if (role === "customer") {
-          navigate("/Customer");
-        }
+        setModalMessage("Login successful!");
+        setShowModal(true);
+        setTimeout(() => {
+          if (role === "admin") {
+            navigate("/AdminDashboard");
+          } else if (role === "customer") {
+            navigate("/Customer");
+          }
+        }, 1500);
       } else {
-        alert(`Invalid role selected. Please select the correct role for your account.`);
+        setModalMessage("Invalid role selected. Please select the correct role for your account.");
+        setShowModal(true);
       }
     } else {
-      alert("Invalid email or password.");
+      setModalMessage("Invalid email or password.");
+      setShowModal(true);
     }
   };
+  
 
   return (
     <div className="relative h-screen w-full bg-gray-100 overflow-hidden">
+      {/* Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div
+            className="bg-white p-6 rounded-lg shadow-lg text-center"
+          >
+            <p className="text-gray-800 text-lg font-semibold">{modalMessage}</p>
+            <button
+              onClick={closeModal}
+              className="mt-4 bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600 transition"
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="relative h-full w-full">
         <div
           className={`absolute h-full w-1/2 bg-white flex items-center justify-center transition-transform duration-700 ease-in-out ${
@@ -233,15 +282,15 @@ function LoginSignup() {
                   </div>
                   <button
                     type="submit"
-                    className="w-full bg-green-500 text-white py-2 rounded-lg font-bold hover:bg-green-600 transition"
+                    className="w-full bg-orange-500 text-white py-2 rounded-lg font-bold hover:bg-orange-600 transition"
                   >
                     Log In
                   </button>
                 </form>
                 <p className="mt-4 text-center text-sm text-gray-600">
-                  Don't have an account?{" "}
+                  Don’t have an account yet?{" "}
                   <span
-                    className="text-orange-500 font-bold cursor-pointer hover:underline"
+                    className="text-green-500 font-bold cursor-pointer hover:underline"
                     onClick={toggleForm}
                   >
                     Sign Up
