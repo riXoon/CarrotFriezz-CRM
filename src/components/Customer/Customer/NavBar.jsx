@@ -2,10 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { FaHome, FaBell, FaUserCircle } from 'react-icons/fa';
 import { MdKeyboardArrowDown } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
+import friseUpLogo from '../../../assets/friseup-logo.png';
+
 
 const NavBar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [fullName, setFullName] = useState("John Doe"); // Default name
+
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,12 +29,13 @@ const NavBar = () => {
     navigate('/Customer');
   };
 
+
   return (
-    <div className="bg-orange-500 shadow-md">
-      <nav className="flex items-center justify-between px-6 py-4">
+    <div className="bg-friezOrange-700 shadow-md">
+      <nav className="flex items-center justify-between px-20 py-4">
         {/* Left Side: Logo */}
-        <div className="flex items-center space-x-3">
-          <h1 className="text-white font-bold text-2xl">FriseUp</h1>
+        <div className="flex items-center space-x-3 cursor-pointer">
+          <img src={friseUpLogo} alt="FriseUp Logo" onClick={handleHome} />
         </div>
 
         {/* Right Side: Icons and User Profile */}
@@ -48,12 +53,9 @@ const NavBar = () => {
           <button
             className="relative text-white text-2xl hover:text-gray-200 transition duration-200"
             title="Notifications"
-          >
+    >
             <FaBell />
-            {/* Notification Badge */}
-            <span className="absolute -top-1 -right-1 bg-red-600 text-xs text-white rounded-full h-5 w-5 flex items-center justify-center font-bold">
-              3
-            </span>
+
           </button>
 
           {/* User Profile with Dropdown */}
@@ -81,6 +83,8 @@ const NavBar = () => {
           </div>
         </div>
       </nav>
+
+    
     </div>
   );
 };
