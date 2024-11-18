@@ -159,6 +159,30 @@
   opacity: 0;
 }
 
+@keyframes fadeInReview {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes spinReview {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-fadeInReview {
+  animation: fadeInReview 0.3s ease-in-out;
+}
+
+.loaderReview {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-top-color: #3498db;
+  animation: spinReview 1s ease-in-out infinite;
+}
+
 
 
 
