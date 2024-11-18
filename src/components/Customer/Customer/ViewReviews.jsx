@@ -1,13 +1,20 @@
-import React, { useState } from 'react';
-import { FaHeart, FaStar, FaStarHalfAlt, FaExclamationTriangle } from 'react-icons/fa'; // Import icons
-import { useLocation } from 'react-router-dom'; // Import useLocation to retrieve passed data
-import CustomerModal from '../Customer/CustomerModal'; // Modal component for adding reviews
-import NavBar from './NavBar'; // Navbar component
+import React, { useState, useEffect } from 'react';
+import { FaHeart, FaStar, FaStarHalfAlt, FaExclamationTriangle } from 'react-icons/fa';
+import { useLocation } from 'react-router-dom';
+import CustomerModal from '../Customer/CustomerModal';
+import NavBar from './NavBar';
 
 const ViewReviews = () => {
-  // Retrieve product data from the navigation state
   const location = useLocation();
-  const { product } = location.state || {}; // Destructure product from passed state
+  const { product } = location.state || {};
+  const [fullName, setFullName] = useState("Anonymous");
+
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (storedUser && storedUser.fullName) {
+      setFullName(storedUser.fullName);
+    }
+  }, []);
 
   const [comments, setComments] = useState([
     {
@@ -24,129 +31,162 @@ const ViewReviews = () => {
       date: '11/16/2024',
       comment: 'Best carrot fries I’ve had! The buy 1 take 2 offer makes it even better!',
     },
+    {
+      id: 3,
+      name: 'Emily Clark',
+      rating: 4,
+      date: '11/15/2024',
+      comment: 'Great flavor, but a bit too salty for my taste.',
+    },
+    {
+      id: 4,
+      name: 'Mark Johnson',
+      rating: 3.5,
+      date: '11/14/2024',
+      comment: 'The fries were okay, nothing too special about them.',
+    },
   ]);
-  const [newComment, setNewComment] = useState(""); // Text for the new review
-  const [liked, setLiked] = useState(false); // Heart icon state for liking the product
-  const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
-  const [rating, setRating] = useState(0); // Rating for the new review
+  const [newComment, setNewComment] = useState("");
+  const [liked, setLiked] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [rating, setRating] = useState(0);
 
-  const handleModalOpen = (product) => {
-    setCurrentProduct(product);
-    setIsModalOpen(true); // Open modal
-  };
+  // State to track whether more reviews are visible
+  const [showMoreReviews, setShowMoreReviews] = useState(false);
 
-  const handleModalClose = () => {
-    setIsModalOpen(false); // Close modal
-    setCurrentProduct(null); // Reset current product
-  };
-
-  const handleRatingChange = (newRating) => {
-    setRating(newRating); // Set the new rating
-  };
+  const handleModalOpen = () => setIsModalOpen(true);
+  const handleModalClose = () => setIsModalOpen(false);
+  const handleRatingChange = (newRating) => setRating(newRating);
 
   const addReview = () => {
     if (newComment.trim()) {
-      const newReview = {
-        id: comments.length + 1,
-        name: 'Anonymous', // Placeholder name, can be modified later
-        rating: rating,
-        date: new Date().toLocaleDateString(), // Current date
-        comment: newComment, // Comment text
-      };
-      setComments([...comments, newReview]); // Add new review to the list
-      setNewComment(""); // Reset comment input field
-      setIsModalOpen(false); // Close modal
+      setComments([
+        {
+          id: comments.length + 1,
+          name: fullName,
+          rating,
+          date: new Date().toLocaleDateString(),
+          comment: newComment,
+        },
+        ...comments,
+      ]);
+      setNewComment("");
+      setIsModalOpen(false);
     }
   };
 
-  const handleHeartClick = () => {
-    setLiked(!liked); // Toggle liked state
-  };
+  const handleHeartClick = () => setLiked(!liked);
+
+  // Filter comments to show only 2 by default, based on showMoreReviews flag
+  const displayedComments = showMoreReviews ? comments : comments.slice(0, 2);
 
   return (
     <div>
-      <NavBar /> {/* Navbar component */}
+      <NavBar />
 
-      <div className="w-full min-h-screen p-8 bg-gray-50 font-sans">
-        {/* Product Section */}
-        <div className="text-center mb-10">
-          <img
-            src={product?.image} // Display the image of the selected product
-            alt={product?.name} // Display the name of the selected product
-            className="w-[24rem] md:w-[100rem] mx-auto rounded-lg shadow-lg px-[25rem]"
-          />
-          <div className='mt-4 flex items-center justify-evenly gap-[30rem]'>
-            <div className='flex items-center gap-4'>
-              <h2 className="text-xl font-semibold text-gray-800">{product?.name}</h2> {/* Display the product name */}
-              <p className="text-green-500 text-md flex justify-center items-center gap-1">
-                <span>{product?.rating}</span> <FaStar /><FaStar /><FaStar /><FaStar /><FaStarHalfAlt /> {/* Display rating */}
-              </p>
+      <div className="w-full min-h-screen bg-gray-100 font-sans">
+        <div className="w-full max-w-full mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
+          
+          <div className="w-full flex justify-center">
+            <div className="relative w-full max-w-5xl h-[30rem]">
+              <img
+                src={product?.image}
+                alt={product?.name}
+                className="w-full h-full object-contain object-center"
+              />
             </div>
-            <div className='flex items-center gap-4'>
-              <button
-                className="bg-transparent text-green-500 text-sm px-4 py-1 rounded-xl border border-green-500 hover:bg-green-600 duration-500 hover:text-white"
-                onClick={() => handleModalOpen(product)} // Open modal to add review
-              >
-                Add a review
-              </button>
-              <div className="flex items-center gap-2">
+          </div>
+          
+          <div className="px-8 py-12 lg:px-24 lg:py-16">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+              <div className='flex gap-5'>
+                  <h2 className="text-2xl font-bold text-gray-800 mb-6 md:mb-0">{product?.name}</h2>
+                  <p className="text-yellow-500 text-md flex items-center gap-1">
+                      {[...Array(Math.floor(product?.rating || 0))].map((_, i) => <FaStar key={i} />)}
+                      {product?.rating % 1 ? <FaStarHalfAlt /> : null}
+                      <span className="ml-2 text-gray-700">{product?.rating}</span>
+                    </p>
+              </div>
+              <div className="flex items-center space-x-6">
                 <button
-                  className={`transition duration-200 ${liked ? 'text-green-500' : 'text-gray-500'}`}
-                  onClick={handleHeartClick} // Toggle heart icon state
+                  className=" bg-transparent border border-green-500 text-sm text-green-500 px-4 py-1 rounded-xl shadow-lg hover:bg-green-600 transition duration-300 hover:text-white "
+                  onClick={handleModalOpen}
+                >
+                  Add a Review
+                </button>
+                <button
+                  className={`text-2xl ${liked ? 'text-green-500 animate-beat' : 'text-gray-400'} hover:text-green-500 transition duration-300`}
+                  onClick={handleHeartClick}
                 >
                   <FaHeart />
                 </button>
-                <FaExclamationTriangle className="text-yellow-500" />
+                <FaExclamationTriangle className="text-yellow-500 text-2xl" />
               </div>
+            </div>
+            <p className='mt-5'>Carrot Friezz’s buy 1 take 2 something something priced at ₱59.00 only!</p>
+          </div>
+
+          {/* Review Section */}
+          <div className="px-8 md:px-24 py-12 bg-gray-50">
+            <h1 className='text-2xl font-semibold mb-8'>Reviews</h1>
+            {displayedComments.map((review) => (
+              <div key={review.id} className="border border-gray-200 rounded-lg p-8 mb-8 bg-white shadow-md">
+                <div className="flex items-center mb-6">
+                  <div className="w-16 h-16 rounded-full bg-gray-300 mr-6 flex-shrink-0 flex items-center justify-center text-gray-500 text-3xl">
+                    👤
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-gray-800 text-lg flex items-center">
+                      {review.name}
+                      <span className="text-yellow-500 ml-2 flex items-center text-sm">
+                        {[...Array(Math.floor(review.rating))].map((_, i) => <FaStar key={i} />)}
+                        {review.rating % 1 ? <FaStarHalfAlt /> : null}
+                      </span>
+                    </h4>
+                    <p className="text-gray-400 text-md">{review.date}</p>
+                  </div>
+                  <button className="text-red-400 hover:text-red-500 transition duration-200">
+                    <FaHeart />
+                  </button>
+                </div>
+                <p className="text-gray-700 leading-relaxed text-lg">{review.comment}</p>
+              </div>
+            ))}
+
+            {/* Button to toggle reviews visibility */}
+            <div className="text-center mt-6">
+              {!showMoreReviews ? (
+                <button
+                  className="bg-green-500 text-white border border-green-500 px-4 py-2 rounded-xl hover:bg-transparent hover:text-green-500 transition duration-500"
+                  onClick={() => setShowMoreReviews(true)}
+                >
+                  See more reviews
+                </button>
+              ) : (
+                <button
+                  className="bg-green-500 text-white border border-green-500 px-4 py-2 rounded-xl hover:bg-transparent hover:text-green-500 transition duration-500"
+                  onClick={() => setShowMoreReviews(false)}
+                >
+                  See less reviews
+                </button>
+              )}
             </div>
           </div>
-        </div>
 
-        {/* Review Section */}
-        <div className="max-w-3xl mx-auto">
-          {comments.map((review) => (
-            <div key={review.id} className="border border-gray-200 rounded-lg p-6 mb-6 bg-white shadow-lg">
-              <div className="flex items-center mb-4">
-                <div className="w-12 h-12 rounded-full bg-gray-300 mr-4 flex-shrink-0">
-                  {/* Placeholder profile icon */}
-                  <span className="text-xl text-gray-500 flex items-center justify-center h-full">👤</span>
-                </div>
-                <div className="flex-1">
-                  <h4 className="font-semibold text-gray-800 flex items-center">
-                    {review.name}
-                    <span className="text-orange-500 ml-2 flex items-center text-sm">
-                      {[...Array(Math.floor(review.rating))].map((_, i) => (
-                        <FaStar key={i} />
-                      ))}
-                      {review.rating % 1 ? <FaStarHalfAlt /> : null}
-                    </span>
-                  </h4>
-                  <p className="text-gray-400 text-sm">{review.date}</p>
-                </div>
-                <button className="text-red-400 hover:text-red-500 transition duration-200">
-                  <FaHeart />
-                </button>
-              </div>
-              <p className="text-gray-700 leading-relaxed">
-                {review.comment}
-              </p>
-            </div>
-          ))}
+          {/* Modal for Adding a Review */}
+          {isModalOpen && (
+            <CustomerModal
+              isOpen={isModalOpen}
+              onClose={handleModalClose}
+              title={`Write your review for ${product?.name}`}
+              rating={rating}
+              onRatingChange={handleRatingChange}
+              onSubmit={addReview}
+              newComment={newComment}
+              setNewComment={setNewComment}
+            />
+          )}
         </div>
-
-        {/* Modal Component for Adding a Review */}
-        {isModalOpen && (
-          <CustomerModal
-            isOpen={isModalOpen}
-            onClose={handleModalClose} // Close modal
-            title={`Write your review for ${product?.name}`} // Modal title with product name
-            rating={rating} // Rating state
-            onRatingChange={handleRatingChange} // Handle rating change in the modal
-            onSubmit={addReview} // Submit new review logic
-            newComment={newComment} // Pass the comment text
-            setNewComment={setNewComment} // Function to update the comment text
-          />
-        )}
       </div>
     </div>
   );
