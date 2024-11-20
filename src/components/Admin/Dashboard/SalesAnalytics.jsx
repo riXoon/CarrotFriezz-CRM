@@ -30,11 +30,11 @@ const SalesAnalytics = () => {
       const chart = new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
           datasets: [
             {
               label: 'Sales',
-              data: [300, 500, 200, 800, 1500, 700, 2500],
+              data: [300, 1000, 200, 800, 1500, 700, 2500],
               backgroundColor: 'rgba(29, 174, 0, 0.6)',
               borderColor: 'rgba(34, 197, 94, 1)',
               borderWidth: 1,
