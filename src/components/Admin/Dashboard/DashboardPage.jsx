@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 
 import Card from './Card';
 import SalesAnalytics from './SalesAnalytics';
-import DataCard from '../../shared/DataCard'
-import NavBar from '../../shared/NavBar';
+import DataCard from '../../../shared/DataCard'
+import NavBar from '../../../shared/NavBar';
 
 const DashboardPage = () => {
   
@@ -49,7 +49,6 @@ const DashboardPage = () => {
           subTitle = "14, 892"
           showlinkText = {false} 
         />
-
         <Card
           title = "Customers"
           subTitle = "100,000"

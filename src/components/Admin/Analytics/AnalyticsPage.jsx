@@ -1,8 +1,8 @@
 import React from 'react'
-import NavBar from '../../shared/NavBar'
+import NavBar from '../../../shared/NavBar'
 import VisitorInsights from './VisitorInsights'
 import CustomerFeedback from './CustomerFeedback'
-import DataCard from '../../shared/DataCard'
+import DataCard from '../../../shared/DataCard'
 
 const AnalyticsPage = () => {
 

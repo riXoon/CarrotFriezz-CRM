@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import NavBar from '../../shared/NavBar';
+import NavBar from '../../../shared/NavBar';
 import AddTransaction from './AddTransaction';
 
 const TransactionPage = () => {

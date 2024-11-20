@@ -31,12 +31,12 @@ const Emails = () => {
   const [reply, setReply] = useState('');
   const [showReplyBox, setShowReplyBox] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
-  const [isLoading, setIsLoading] = useState(false); // Loading state for the button
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSelectMessage = (message) => {
     setSelectedMessage(message);
     setReply('');
-    setShowReplyBox(false); // Hide reply box when a new message is opened
+    setShowReplyBox(false);
   };
 
   const handleSendReply = () => {

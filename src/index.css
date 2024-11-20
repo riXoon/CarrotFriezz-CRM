@@ -85,46 +85,108 @@
 }
 
 /* Loading State Styling */
-.loading-overlay {
-  background-color: rgba(0, 0, 0, 0.6);
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 100;
-}
-
-.spinner {
-  width: 60px;
-  height: 60px;
-  border: 6px solid #f3f3f3;
-  border-top: 6px solid #4CAF50; /* Friez Green */
+.loader {
+  border: 4px solid #f3f3f3; /* Light grey */
+  border-top: 4px solid #4caf50; /* Green */
   border-radius: 50%;
-  animation: spin 1.5s linear infinite;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
 }
 
-.spinner-text {
-  font-size: 18px;
-  font-weight: bold;
-  color: #fff;
-  margin-top: 20px;
-}
-
-/* Spin animation for the loader */
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+      transform: rotate(0deg);
+  }
+  100% {
+      transform: rotate(360deg);
+  }
 }
 
-/* Fade in animation for the modal */
-@keyframes fadeInUp {
-  0% { opacity: 0; transform: translateY(20px); }
-  100% { opacity: 1; transform: translateY(0); }
+/* Transition sa login */
+/* Clip-path animations for the slicing effect */
+.clip-right {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
 }
+
+.clip-left {
+  clip-path: polygon(100% 0, 100% 100%, 0 100%, 0 0);
+}
+
+.transition-all {
+  transition: clip-path 0.7s ease-in-out;
+}
+
+.left-section {
+  transition: transform 0.7s ease-in-out;
+}
+
+.right-section {
+  transition: transform 0.7s ease-in-out;
+} 
+
+/* Heart clicked */
+@keyframes beat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+}
+
+.animate-beat {
+  animation: beat 0.3s ease-in-out;
+}
+
+/* Modal starts off-screen and slides into view */
+/* Initial state - hidden (slide down) */
+.customerModal {
+  transform: translateY(100%);  /* Starts off below the screen */
+  opacity: 0;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+/* Modal slide-up transition (when opening) */
+.customerModal.slide-up {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Modal slide-down transition (when closing) */
+.customerModal.slide-down {
+  transform: translateY(100%);
+  opacity: 0;
+}
+
+@keyframes fadeInReview {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes spinReview {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-fadeInReview {
+  animation: fadeInReview 0.3s ease-in-out;
+}
+
+.loaderReview {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-top-color: #3498db;
+  animation: spinReview 1s ease-in-out infinite;
+}
+
+
+
+
+
 
 
 

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import NavBar from '../../shared/NavBar'
+import NavBar from '../../../shared/NavBar'
 import Emails from './Emails'
 
 const SupportPage = () => {
