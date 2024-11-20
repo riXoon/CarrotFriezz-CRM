@@ -7,7 +7,7 @@ import friseUpLogo from '../../../assets/friseup-logo.png';
 
 const NavBar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [fullName, setFullName] = useState("John Doe"); // Default name
+  /* const [fullName, setFullName] = useState("John Doe"); // Default name */
 
 
   const navigate = useNavigate();
@@ -65,7 +65,7 @@ const NavBar = () => {
               className="flex items-center space-x-2 text-white hover:text-gray-200 focus:outline-none transition duration-200"
             >
               <FaUserCircle className="text-3xl" />
-              <span className="font-medium text-lg">{fullName}</span>
+              <span className="font-medium text-lg">John Doe</span>
               <MdKeyboardArrowDown className="text-xl" />
             </button>
 

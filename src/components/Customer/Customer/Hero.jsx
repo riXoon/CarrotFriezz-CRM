@@ -15,7 +15,7 @@ const Hero = () => {
   const [currentProduct, setCurrentProduct] = useState(null);
   const [rating, setRating] = useState(0);
   const [newComment, setNewComment] = useState("");
-  const [fullName, setFullName] = useState("User"); // Default to "User" if no name found
+  /* const [fullName, setFullName] = useState("User"); // Default to "User" if no name found */
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -76,7 +76,7 @@ const Hero = () => {
   return (
     <div className="p-8 px-44">
       <div className="text-left mb-6">
-        <h1 className="text-3xl font-bold mb-2">Hello, {fullName}!</h1>
+        <h1 className="text-3xl font-bold mb-2">Hello, User!!</h1>
         <p className="text-md text-gray-600">Enjoy our mouth-watering carrot fries at affordable prices</p>
       </div>
 

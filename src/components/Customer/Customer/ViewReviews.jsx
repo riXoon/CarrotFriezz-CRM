@@ -7,14 +7,14 @@ import NavBar from './NavBar';
 const ViewReviews = () => {
   const location = useLocation();
   const { product } = location.state || {};
-  const [fullName, setFullName] = useState("Anonymous");
+  /* const [fullName, setFullName] = useState("Anonymous"); */
 
-  useEffect(() => {
+ /*  useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     if (storedUser && storedUser.fullName) {
       setFullName(storedUser.fullName);
     }
-  }, []);
+  }, []); */
 
   const [comments, setComments] = useState([
     {
@@ -137,7 +137,7 @@ const ViewReviews = () => {
                   </div>
                   <div className="flex-1">
                     <h4 className="font-semibold text-gray-800 text-lg flex items-center">
-                      {review.name}
+                      Anonymous
                       <span className="text-yellow-500 ml-2 flex items-center text-sm">
                         {[...Array(Math.floor(review.rating))].map((_, i) => <FaStar key={i} />)}
                         {review.rating % 1 ? <FaStarHalfAlt /> : null}
