@@ -137,12 +137,13 @@ const ViewReviews = () => {
                   </div>
                   <div className="flex-1">
                     <h4 className="font-semibold text-gray-800 text-lg flex items-center">
-                      Anonymous
+                      {review.name}
                       <span className="text-yellow-500 ml-2 flex items-center text-sm">
                         {[...Array(Math.floor(review.rating))].map((_, i) => <FaStar key={i} />)}
                         {review.rating % 1 ? <FaStarHalfAlt /> : null}
                       </span>
                     </h4>
+                    
                     <p className="text-gray-400 text-md">{review.date}</p>
                   </div>
                   <button className="text-red-400 hover:text-red-500 transition duration-200">
