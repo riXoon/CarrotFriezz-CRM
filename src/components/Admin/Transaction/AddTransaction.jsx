@@ -1,32 +1,32 @@
-import React, { useState } from 'react';
-import { CSSTransition } from 'react-transition-group';
+import React, { useState } from "react";
+import { CSSTransition } from "react-transition-group";
+import axios from "axios";
 
 const AddTransaction = ({ onSave }) => {
     const [showModal, setShowModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
-    const [confirmationMessage, setConfirmationMessage] = useState('');
+    const [confirmationMessage, setConfirmationMessage] = useState("");
     const [selectedItems, setSelectedItems] = useState([]);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [totalPrice, setTotalPrice] = useState(0);
-
+    const salespersons = ["Emelie Uson", "Jamela Uson"];
     const [formData, setFormData] = useState({
-        name: '',
+        firstName: "",
+        lastName: "",
         items: [],
-        payment: '',
-        promo: '',
-        salesperson: '',
-        totalPrice: 0,
+        payment: "",
+        promoCode: "",
+        salesperson: "",
+        totalPrice: "",
     });
 
     const items = [
-        { name: 'Zzuper Mini Friezz', price: 59.0 },
-        { name: 'Mini Friezz', price: 149.0 },
-        { name: 'Midi Friezz', price: 189.0 },
-        { name: 'Maxi Friezz', price: 229.0 },
+        { name: "Zzuper Mini Friezz", price: 59.0 },
+        { name: "Mini Friezz", price: 149.0 },
+        { name: "Midi Friezz", price: 189.0 },
+        { name: "Maxi Friezz", price: 229.0 },
     ];
-
-    const salespersons = ['Emelie Uson', 'Jamela Uson'];
 
     const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
 
@@ -35,38 +35,52 @@ const AddTransaction = ({ onSave }) => {
         let newSelectedItems;
 
         if (isSelected) {
-            newSelectedItems = selectedItems.filter((selected) => selected.name !== item.name);
+            // Increase quantity if item is already selected
+            newSelectedItems = selectedItems.map((selected) =>
+                selected.name === item.name
+                    ? { ...selected, quantity: selected.quantity + 1 }
+                    : selected
+            );
         } else {
-            newSelectedItems = [...selectedItems, item];
+            // Add item with quantity 1 if not selected
+            newSelectedItems = [...selectedItems, { ...item, quantity: 1 }];
         }
 
         setSelectedItems(newSelectedItems);
 
-        const newTotalPrice = newSelectedItems.reduce((acc, selected) => acc + selected.price, 0);
+        // Update total price
+        const newTotalPrice = newSelectedItems.reduce(
+            (acc, selected) => acc + selected.price * selected.quantity,
+            0
+        );
         setTotalPrice(newTotalPrice.toFixed(2));
-        setIsDropdownOpen(false); // Close dropdown after item selection
+        setIsDropdownOpen(false);
     };
 
     const handleRemoveItem = (itemName) => {
         const newSelectedItems = selectedItems.filter((item) => item.name !== itemName);
         setSelectedItems(newSelectedItems);
 
-        const newTotalPrice = newSelectedItems.reduce((acc, selected) => acc + selected.price, 0);
+        const newTotalPrice = newSelectedItems.reduce(
+            (acc, selected) => acc + selected.price * selected.quantity,
+            0
+        );
         setTotalPrice(newTotalPrice.toFixed(2));
     };
 
-    const handleSave = (e) => {
+    const handleSave = async (e) => {
         e.preventDefault();
 
-        if (!formData.name || !selectedItems.length || !formData.payment || !formData.salesperson) {
+        if (!formData.firstName || !formData.lastName || !selectedItems.length || !formData.payment || !formData.salesperson) {
             setIsLoading(true);
             setShowModal(false);
 
-            let failureMessage = 'Transaction Failed: ';
-            if (!formData.name) failureMessage += 'Customer Name is required. ';
-            if (!selectedItems.length) failureMessage += 'At least one item must be selected. ';
-            if (!formData.payment) failureMessage += 'Payment Method is required. ';
-            if (!formData.salesperson) failureMessage += 'Salesperson is required. ';
+            let failureMessage = "Transaction Failed: ";
+            if (!formData.firstName) failureMessage += "First Name is required. ";
+            if (!formData.lastName) failureMessage += "Last Name is required. ";
+            if (!selectedItems.length) failureMessage += "At least one item must be selected. ";
+            if (!formData.payment) failureMessage += "Payment Method is required. ";
+            if (!formData.salesperson) failureMessage += "Salesperson is required. ";
 
             setTimeout(() => {
                 setIsLoading(false);
@@ -77,30 +91,36 @@ const AddTransaction = ({ onSave }) => {
             return;
         }
 
-        setIsLoading(true);
-        setShowModal(false);
+        const totalQuantity = selectedItems.reduce((acc, item) => acc + item.quantity, 0);
 
-        setTimeout(() => {
-            setIsLoading(false);
+        const payload = {
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            items: totalQuantity, // Only store the total quantity
+            totalPrice: totalPrice,
+            payment: formData.payment,
+            salesperson: formData.salesperson,
+            promoCode: formData.promoCode,
+        };
+
+        try {
+            setIsLoading(true);
+            await axios.post("http://localhost:80/friseup_api/savetransaction", payload, {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            setTimeout(() => {
+                setConfirmationMessage("Transaction Successful!");
+                setShowConfirmation(true);
+            }, 2000);
+        } catch (error) {
+            console.error("Transaction error:", error);
+            setConfirmationMessage("Transaction Failed. Please try again.");
             setShowConfirmation(true);
-            setConfirmationMessage('Transaction Successful!');
-
-            const currentDate = new Date().toLocaleDateString();
-
-            if (onSave) {
-                const transaction = {
-                    orderNo: Math.floor(Math.random() * 1000),
-                    name: formData.name,
-                    items: `${selectedItems.length} items`,
-                    price: `₱${totalPrice}`,
-                    payment: formData.payment,
-                    promo: formData.promo,
-                    salesperson: formData.salesperson,
-                    date: currentDate,
-                };
-                onSave(transaction);
-            }
-        }, 2000);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleAddTransactionClick = () => {
@@ -131,11 +151,21 @@ const AddTransaction = ({ onSave }) => {
                         <h2 className="text-2xl font-semibold text-center mb-4">New Transaction</h2>
                         <form className="space-y-4">
                             {/* Customer Name */}
+
+                            <label htmlFor="">Customer Name</label>
                             <input
                                 className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-friezGreen"
-                                placeholder="Customer Name"
-                                value={formData.name}
-                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                placeholder="First Name"
+                                value={formData.firstName}
+                                onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                                
+                            />
+                            <input
+                                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-friezGreen"
+                                placeholder="Last Name"
+                                value={formData.lastName}
+                                onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                                
                             />
 
                             {/* Multi-select dropdown for Product Name */}
@@ -225,7 +255,7 @@ const AddTransaction = ({ onSave }) => {
                                 className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-friezGreen"
                                 placeholder="Promo Code"
                                 value={formData.promo}
-                                onChange={(e) => setFormData({ ...formData, promo: e.target.value })}
+                                onChange={(e) => setFormData({ ...formData, promoCode: e.target.value })}
                             />
 
                             <div className="flex gap-4 justify-end">
