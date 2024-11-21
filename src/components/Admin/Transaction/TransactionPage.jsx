@@ -1,41 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import NavBar from '../../../shared/NavBar';
 import AddTransaction from './AddTransaction';
+import axios from 'axios';
 
 const TransactionPage = () => {
-  const [transactions, setTransactions] = useState([
-    {
-      transactionNo: '#12345',
-      name: 'Liezette',
-      date: '11-14-24',
-      time: '10:00 AM',
-      price: '₱150.00',
-      items: '3 items',
-      payment: 'Paymaya',
-      promo: 'Promo',
-      salesperson: 'Liezette'
-    },
-    // ... other sample data
-  ]);
 
-  const addTransaction = (newTransaction) => {
-    // Generate transaction number as a zero-padded value (e.g., 0001, 0002, etc.)
-    const transactionNo = `#${(transactions.length + 1).toString().padStart(4, '0')}`;
+  const [transactions, setTransactions] = useState([]);
+    useEffect(() => {
+      getTransactions();
+    }, []);
 
-    // Format the date to mm-dd-yy
-    const date = new Date();
-    const formattedDate = `${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}-${date.getFullYear().toString().slice(2)}`;
-
-        setTransactions((prev) => [
-            ...prev,
-            {
-                ...newTransaction,
-                transactionNo,  // Add the formatted transaction number
-                date: formattedDate  // Add the formatted date
-            }
-        ]);
+    const getTransactions = () => {
+      axios.get("http://localhost:80/friseup_api/transaction").then(function(response){
+        console.log(response.data);
+        setTransactions(response.data);
+      });
     };
-
 
   return (
     <div>
@@ -44,7 +24,7 @@ const TransactionPage = () => {
       {/* Heading and Button Container */}
       <div className="flex justify-between items-center mt-6">
         <h1 className="font-bold text-2xl">Transactions</h1>
-        <AddTransaction onSave={addTransaction} />
+        <AddTransaction onSave={getTransactions} />
       </div>
 
       <div className="flex justify-center bg-gray-100 mt-6">
@@ -65,18 +45,24 @@ const TransactionPage = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {transactions.map((transaction, index) => (
-                    <tr key={index} className="border-b border-gray-200 text-gray-600 text-sm">
-                      <td className="py-3 px-6 text-left">{transaction.transactionNo}</td>
-                      <td className="py-3 px-6 text-left">{transaction.name}</td>
-                      <td className="py-3 px-6 text-left">{transaction.date}</td>
-                      <td className="py-3 px-6 text-left">{transaction.items}</td>
-                      <td className="py-3 px-6 text-left">{transaction.price}</td>
-                      <td className="py-3 px-6 text-left">{transaction.payment}</td>
-                      <td className="py-3 px-6 text-left">{transaction.promo}</td>
-                      <td className="py-3 px-6 text-left">{transaction.salesperson}</td>
+                  {transactions.length === 0 ? (
+                    <tr>
+                      <td colSpan="8" className="text-center py-3 px-6 text-gray-600">No transactions found</td>
                     </tr>
-                  ))}
+                  ) : (
+                    transactions.map((transaction, index) => (
+                      <tr key={index} className="border-b border-gray-200 text-gray-600 text-sm">
+                        <td className="py-3 px-6 text-left">{String(transaction.id).padStart(4, '0')}</td>
+                        <td className="py-3 px-6 text-left">{transaction.firstName} {transaction.lastName}</td>
+                        <td className="py-3 px-6 text-left">{transaction.date}</td>
+                        <td className="py-3 px-6 text-left">{transaction.items}</td>
+                        <td className="py-3 px-6 text-left">{transaction.totalPrice}</td>
+                        <td className="py-3 px-6 text-left">{transaction.payment}</td>
+                        <td className="py-3 px-6 text-left">{transaction.promo}</td>
+                        <td className="py-3 px-6 text-left">{transaction.salesperson}</td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
