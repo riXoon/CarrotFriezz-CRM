@@ -184,6 +184,38 @@
 }
 
 
+/* Make the scrollbar minimalist */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px; /* Set the width of the vertical scrollbar */
+  height: 6px; /* Set the height of the horizontal scrollbar */
+}
+
+/* Styling the scrollbar thumb */
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2); /* Light gray thumb */
+  border-radius: 3px; /* Rounded thumb */
+}
+
+/* Styling the scrollbar track */
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent; /* Transparent track */
+}
+
+/* Hide scrollbar when not hovering */
+.custom-scrollbar {
+  overflow: hidden; /* Hide scrollbars by default */
+}
+
+.custom-scrollbar:hover {
+  overflow: auto; /* Show scrollbars when hovering */
+}
+
+canvas {
+  background-color: transparent !important;
+}
+
+
+
 
 
 
