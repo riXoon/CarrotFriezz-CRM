@@ -6,6 +6,7 @@ import product2 from '../../../assets/product2.png';
 import product3 from '../../../assets/product3.png';
 import product4 from '../../../assets/product4.png';
 import CustomerModal from '../Customer/CustomerModal';
+import axios from 'axios';
 
 const Hero = () => {
   const navigate = useNavigate();
@@ -17,12 +18,32 @@ const Hero = () => {
   const [newComment, setNewComment] = useState("");
   /* const [fullName, setFullName] = useState("User"); // Default to "User" if no name found */
 
-  useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (storedUser && storedUser.fullName) {
-      setFullName(storedUser.fullName);
-    }
-  }, []);
+  const [firstName, setFirstName] = useState([]);
+
+    useEffect(() => {
+      getFirstName();
+    }, []);
+
+    const getFirstName = () => {
+      const userId = localStorage.getItem("id");
+      if (!userId) {
+        console.error("User ID is missing in localStorage.");
+        return;
+      }
+      axios
+        .get(`http://localhost:80/friseup_api/username.php?userId=${userId}`)
+        .then((response) => {
+          if (response.data.status === 1) {
+            const { firstName } = response.data.data;
+            setFirstName(`${firstName}`);
+          } else {
+            console.error(response.data.message);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching firstname:", error);
+        });
+    };
 
   const products = [
     { id: 1, name: 'Zsuper Mini', image: product1, rating: '4.9', description: 'Enjoy our Zusper Mini Carrot Friezz priced at ₱58.00 only!' },
@@ -75,8 +96,8 @@ const Hero = () => {
 
   return (
     <div className="p-8 px-44">
-      <div className="text-left mb-6">
-        <h1 className="text-3xl font-bold mb-2">Hello, User!!</h1>
+      <div className="text-left mb-6 mt-20">
+        <h1 className="text-3xl font-bold mb-2">Hello, {firstName}</h1>
         <p className="text-md text-gray-600">Enjoy our mouth-watering carrot fries at affordable prices</p>
       </div>
 
