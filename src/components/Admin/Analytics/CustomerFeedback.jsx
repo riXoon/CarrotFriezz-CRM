@@ -1,10 +1,28 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const CustomerFeedback = () => {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // Detect system dark mode preference or check for the dark class on the body
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleDarkModeChange = () => {
+      setIsDarkMode(mediaQuery.matches);
+    };
+
+    // Initial check and listener for changes in dark mode preference
+    handleDarkModeChange();
+    mediaQuery.addEventListener('change', handleDarkModeChange);
+
+    return () => {
+      mediaQuery.removeEventListener('change', handleDarkModeChange);
+    };
+  }, []);
+
   const data = {
     labels: ['Very Satisfied', 'Satisfied', 'Neutral', 'Dissatisfied', 'Very Dissatisfied'],
     datasets: [
@@ -35,7 +53,7 @@ const CustomerFeedback = () => {
         labels: {
           usePointStyle: true,
           padding: 20, // Space between legend and chart
-          color: '#333',
+          color: '#9ca3af', // Fixed color for legend text (not affected by dark mode)
           font: {
             size: 14,
             family: 'Arial, sans-serif',
@@ -52,8 +70,8 @@ const CustomerFeedback = () => {
   };
 
   return (
-    <div className="p-6 w-full max-w-2xl mx-auto bg-white rounded-lg shadow-md flex flex-col items-center h-[324px]">
-      <h2 className="text-lg font-bold text-gray-700 self-start mb-4">Customer Feedback</h2>
+    <div className="p-6 w-full max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md flex flex-col items-center h-[324px]">
+      <h2 className="text-lg font-bold text-gray-700 dark:text-white self-start mb-4">Customer Feedback</h2>
       <div className="w-3/4 h-3/4">
         <Pie data={data} options={options} />
       </div>
