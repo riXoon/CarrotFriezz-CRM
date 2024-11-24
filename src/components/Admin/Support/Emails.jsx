@@ -41,15 +41,15 @@ const Emails = () => {
 
   const handleSendReply = () => {
     if (showReplyBox) {
-      setIsLoading(true); // Start loading when reply is sent
+      setIsLoading(true);
       setTimeout(() => {
         alert(`Reply sent: ${reply}`);
         setReply('');
         setShowReplyBox(false);
-        setIsLoading(false); // Stop loading after a brief delay (simulating sending)
-      }, 2000); // Simulate sending for 2 seconds
+        setIsLoading(false);
+      }, 2000);
     } else {
-      setShowReplyBox(true); // Show reply box if it’s not already visible
+      setShowReplyBox(true);
     }
   };
 
@@ -79,28 +79,28 @@ const Emails = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50 text-gray-800">
+    <div className="flex h-screen bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
       {selectedMessage === null ? (
         // List View
         <div className="w-full p-6">
           <div className="flex items-center mb-4 space-x-4">
             <input
               type="checkbox"
-              className="form-checkbox h-5 w-5 text-green-500"
+              className="form-checkbox h-5 w-5 text-green-500 dark:text-green-400"
               checked={selectAll}
               onChange={handleSelectAll}
             />
-            <FaTrash className="text-green-500 cursor-pointer hover:text-red-500" />
+            <FaTrash className="text-green-500 dark:text-green-400 cursor-pointer hover:text-red-500" />
           </div>
           <div className="max-h-96 overflow-y-auto">
             {messages.map((message) => (
               <div
                 key={message.id}
-                className="flex items-center p-4 border-b border-gray-200 hover:bg-gray-100 transition duration-200"
+                className="flex items-center p-4 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition duration-200"
               >
                 <input
                   type="checkbox"
-                  className="form-checkbox h-5 w-5 text-green-500 mr-4"
+                  className="form-checkbox h-5 w-5 text-green-500 dark:text-green-400 mr-4"
                   checked={message.isSelected}
                   onChange={(e) => {
                     e.stopPropagation();
@@ -108,7 +108,7 @@ const Emails = () => {
                   }}
                 />
                 <div
-                  className="mr-4 text-green-500 cursor-pointer"
+                  className="mr-4 text-green-500 dark:text-green-400 cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation();
                     toggleFavorite(message.id);
@@ -122,9 +122,13 @@ const Emails = () => {
                 >
                   <div className="flex justify-between items-center">
                     <span className="font-medium text-lg">{message.sender}</span>
-                    <span className="text-sm text-gray-500">{message.time}</span>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">
+                      {message.time}
+                    </span>
                   </div>
-                  <p className="text-gray-600">{message.subject}</p>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    {message.subject}
+                  </p>
                 </div>
               </div>
             ))}
@@ -135,12 +139,12 @@ const Emails = () => {
         <div className="w-full p-6 flex flex-col relative">
           <div className="flex items-center space-x-4 mb-4">
             <FaArrowLeft
-              className="text-green-500 cursor-pointer"
+              className="text-green-500 dark:text-green-400 cursor-pointer"
               onClick={handleBack}
             />
-            <FaTrash className="text-green-500 cursor-pointer hover:text-red-500" />
+            <FaTrash className="text-green-500 dark:text-green-400 cursor-pointer hover:text-red-500" />
             <div
-              className="text-green-500 cursor-pointer"
+              className="text-green-500 dark:text-green-400 cursor-pointer"
               onClick={() => toggleFavorite(selectedMessage.id)}
             >
               {selectedMessage.isFavorite ? <FaStar /> : <FaRegStar />}
@@ -148,8 +152,12 @@ const Emails = () => {
           </div>
           <div className="mb-4">
             <h2 className="text-2xl font-semibold">{selectedMessage.sender}</h2>
-            <p className="text-sm text-gray-500">{selectedMessage.email}</p>
-            <p className="text-sm text-gray-500">{selectedMessage.phone}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              {selectedMessage.email}
+            </p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              {selectedMessage.phone}
+            </p>
           </div>
           <div className="flex-grow mb-4">
             <p className="text-lg">{selectedMessage.content}</p>
@@ -157,7 +165,7 @@ const Emails = () => {
           <div className="absolute bottom-6 left-6">
             {showReplyBox && (
               <textarea
-                className="w-full h-24 p-3 border border-green-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
+                className="w-full h-24 p-3 border border-green-500 dark:border-green-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:focus:ring-green-400 resize-none bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200"
                 placeholder="Write your reply..."
                 value={reply}
                 onChange={(e) => setReply(e.target.value)}
@@ -166,11 +174,11 @@ const Emails = () => {
             <button
               className={`mt-2 px-4 py-2 ${
                 isLoading
-                  ? 'bg-gray-500 cursor-wait'
-                  : 'bg-green-500 hover:bg-green-600'
-              } text-white rounded-lg transition duration-300`}
+                  ? 'bg-gray-500 dark:bg-gray-600 cursor-wait'
+                  : 'bg-green-500 hover:bg-green-600 dark:bg-green-400 dark:hover:bg-green-500'
+              } text-white dark:text-gray-900 rounded-lg transition duration-300`}
               onClick={handleSendReply}
-              disabled={isLoading} // Disable button when loading
+              disabled={isLoading}
             >
               {isLoading ? (
                 <span>Sending...</span>

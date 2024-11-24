@@ -100,34 +100,36 @@ function LoginSignup() {
         },
         body: JSON.stringify(loginData),
       });
-      const data = await response.json();
   
-      // Debugging logs
-      console.log("Client-selected role:", role);
-      console.log("Server returned role:", data.role);
-      console.log("Response status:", data.status);
+      const data = await response.json();
+      console.log("Login API Response:", data);
   
       if (data.status === 1) {
-        // Role validation
         if (data.role === role) {
+          // Store user ID in localStorage
+          if (data.id) {
+            localStorage.setItem("id", data.id);
+            console.log("User ID stored in localStorage:", data.id);
+          } else {
+            console.warn("No ID returned in the server response.");
+          }
+  
           setSuccessMessage("Login Successful!");
-          setShowLikeConfirmation(true); // Show animated checkmark modal
+          setShowLikeConfirmation(true);
           setTimeout(() => {
             setShowLikeConfirmation(false);
-            setShowRedirectConfirmation(true); // Show redirection confirmation
+            setShowRedirectConfirmation(true);
           }, 2000);
         } else {
-          // Roles mismatch
-          const errorMessage =
+          setModalMessage(
             role === "admin"
               ? "Admin, you are accessing a wrong role."
-              : "You are unauthorized to access this role.";
-          setModalMessage(errorMessage);
+              : "You are unauthorized to access this role."
+          );
           setShowModal(true);
         }
       } else {
-        // Invalid credentials
-        setModalMessage("Invalid email or password.");
+        setModalMessage(data.message || "Invalid email or password.");
         setShowModal(true);
       }
     } catch (error) {
@@ -138,7 +140,6 @@ function LoginSignup() {
       setIsLoading(false);
     }
   };
-  
 
   const confirmRedirect = () => {
     setShowRedirectConfirmation(false);
