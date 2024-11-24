@@ -3,18 +3,38 @@ import { FaHeart, FaStar, FaStarHalfAlt, FaExclamationTriangle } from 'react-ico
 import { useLocation } from 'react-router-dom';
 import CustomerModal from '../Customer/CustomerModal';
 import NavBar from './NavBar';
+import axios from 'axios';
 
 const ViewReviews = () => {
   const location = useLocation();
   const { product } = location.state || {};
-  /* const [fullName, setFullName] = useState("Anonymous"); */
+  const [fullName, setFullName] = useState("Anonymous");
+const [username, setUsername] = useState([]);
 
- /*  useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (storedUser && storedUser.fullName) {
-      setFullName(storedUser.fullName);
-    }
-  }, []); */
+    useEffect(() => {
+      getUsername();
+    }, []);
+
+    const getUsername = () => {
+      const userId = localStorage.getItem("id");
+      if (!userId) {
+        console.error("User ID is missing in localStorage.");
+        return;
+      }
+      axios
+        .get(`http://localhost:80/friseup_api/username.php?userId=${userId}`)
+        .then((response) => {
+          if (response.data.status === 1) {
+            const { firstName, lastName } = response.data.data;
+            setUsername(`${firstName} ${lastName}`);
+          } else {
+            console.error(response.data.message);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching username:", error);
+        });
+    };
 
   const [comments, setComments] = useState([
     {
@@ -63,7 +83,7 @@ const ViewReviews = () => {
       setComments([
         {
           id: comments.length + 1,
-          name: fullName,
+          name: username,
           rating,
           date: new Date().toLocaleDateString(),
           comment: newComment,
