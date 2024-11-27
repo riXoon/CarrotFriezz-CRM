@@ -6,6 +6,7 @@ import product2 from '../../../assets/product2.png';
 import product3 from '../../../assets/product3.png';
 import product4 from '../../../assets/product4.png';
 import CustomerModal from '../Customer/CustomerModal';
+import ReportModal from '../../Customer/Customer/ReportModal'
 import axios from 'axios';
 
 const Hero = () => {
@@ -13,37 +14,36 @@ const Hero = () => {
   const [likedProducts, setLikedProducts] = useState({});
   const [animateHeart, setAnimateHeart] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false); // State for report modal
   const [currentProduct, setCurrentProduct] = useState(null);
   const [rating, setRating] = useState(0);
-  const [newComment, setNewComment] = useState("");
-  /* const [fullName, setFullName] = useState("User"); // Default to "User" if no name found */
-
+  const [newComment, setNewComment] = useState('');
   const [firstName, setFirstName] = useState([]);
 
-    useEffect(() => {
-      getFirstName();
-    }, []);
+  useEffect(() => {
+    getFirstName();
+  }, []);
 
-    const getFirstName = () => {
-      const userId = localStorage.getItem("id");
-      if (!userId) {
-        console.error("User ID is missing in localStorage.");
-        return;
-      }
-      axios
-        .get(`http://localhost:80/friseup_api/username.php?userId=${userId}`)
-        .then((response) => {
-          if (response.data.status === 1) {
-            const { firstName } = response.data.data;
-            setFirstName(`${firstName}`);
-          } else {
-            console.error(response.data.message);
-          }
-        })
-        .catch((error) => {
-          console.error("Error fetching firstname:", error);
-        });
-    };
+  const getFirstName = () => {
+    const userId = localStorage.getItem('id');
+    if (!userId) {
+      console.error('User ID is missing in localStorage.');
+      return;
+    }
+    axios
+      .get(`http://localhost:80/friseup_api/username.php?userId=${userId}`)
+      .then((response) => {
+        if (response.data.status === 1) {
+          const { firstName } = response.data.data;
+          setFirstName(`${firstName}`);
+        } else {
+          console.error(response.data.message);
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching firstname:', error);
+      });
+  };
 
   const products = [
     { id: 1, name: 'Zsuper Mini', image: product1, rating: '4.9', description: 'Enjoy our Zusper Mini Carrot Friezz priced at ₱58.00 only!' },
@@ -83,12 +83,12 @@ const Hero = () => {
 
   const addReview = () => {
     if (newComment.trim()) {
-      console.log("New review:", {
+      console.log('New review:', {
         product: currentProduct.name,
         rating,
         comment: newComment,
       });
-      setNewComment("");
+      setNewComment('');
       setRating(0);
       handleModalClose();
     }
@@ -114,22 +114,20 @@ const Hero = () => {
               </div>
               <div className="flex items-center gap-2">
                 <FaHeart
-                  className={`cursor-pointer text-lg transform ${likedProducts[product.id] ? 'text-green-500' : 'text-gray-400'} ${animateHeart[product.id] ? 'animate-beat' : ''}`}
+                  className={`cursor-pointer text-lg transform ${likedProducts[product.id] ? 'text-green-500' : 'text-gray-400'} ${
+                    animateHeart[product.id] ? 'animate-beat' : ''
+                  }`}
                   onClick={() => toggleLike(product.id)}
                 />
-                <FaExclamationTriangle className="text-yellow-500 text-lg" />
+                <FaExclamationTriangle
+                  className="cursor-pointer text-yellow-500 text-lg"
+                  onClick={() => setIsReportModalOpen(true)} // Open report modal
+                />
               </div>
             </div>
             <p className="text-sm text-gray-500">{product.description}</p>
 
             <div className="flex items-center justify-center gap-7">
-              <button
-                className="mt-4 bg-transparent text-green-500 text-sm px-4 py-1 rounded-xl border border-green-500 hover:bg-green-600 duration-500 hover:text-white"
-                onClick={() => handleModalOpen(product)}
-              >
-                Add a review
-              </button>
-
               <button
                 className="mt-4 bg-transparent text-green-500 text-sm px-4 py-1 rounded-xl border border-green-500 hover:bg-green-600 duration-500 hover:text-white"
                 onClick={() => handleProductSelect(product)}
@@ -141,6 +139,7 @@ const Hero = () => {
         ))}
       </div>
 
+      {/* Existing CustomerModal */}
       {isModalOpen && (
         <CustomerModal
           isOpen={isModalOpen}
@@ -153,6 +152,9 @@ const Hero = () => {
           setNewComment={setNewComment}
         />
       )}
+
+   
+      <ReportModal isOpen={isReportModalOpen} onClose={() => setIsReportModalOpen(false)} />
     </div>
   );
 };
