@@ -6,9 +6,9 @@ const Table = ({ data, columns }) => {
   }
 
   return (
-    <table className="min-w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600">
+    <table className="min-w-full bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600">
       <thead>
-        <tr className="bg-friezOrange-500 text-gray-700 dark:bg-friezOrange-600 dark:text-gray-200 text-sm">
+        <tr className="bg-friezOrange-500 text-gray-700 rounded-lg dark:bg-friezOrange-600 dark:text-gray-200 text-sm">
           {columns.map((col) => (
             <th key={col.key} className="py-2 px-3 text-left font-semibold">
               {col.label}
