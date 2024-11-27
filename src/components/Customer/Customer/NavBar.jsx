@@ -55,6 +55,9 @@ const NavBar = () => {
   const handleEditProfile = () => {
     navigate('/Customer/edit-profile');
   }
+  const handleViewProfile = () => {
+    navigate('/Customer/view-profile');
+  }
 
   const handleHome = () => {
     navigate('/Customer');
@@ -114,17 +117,24 @@ const NavBar = () => {
               <div className="absolute right-0 mt-2 bg-white text-gray-800 shadow-lg rounded-md w-40 overflow-hidden">
                 <button
                   className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
-                  onClick={handleLogout}
+                  onClick={handleViewProfile}
                 >
-                  Logout
+                  View Profile
                 </button>
-
                 <button
                   className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
                   onClick={handleEditProfile}
                 >
                   Edit Profile
                 </button>
+
+                <button
+                  className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </button>
+
               </div>
             )}
           </div>
