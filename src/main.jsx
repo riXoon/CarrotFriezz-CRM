@@ -9,6 +9,7 @@ import ViewReviews from './components/Customer/Customer/ViewReviews';
 import NotificationPage from './components/Customer/Notification/NotificationPage';
 import NotificationDetail from './components/Customer/Notification/NotificationDetail';
 import EditProfile from './components/Customer/EditProfile/EditProfile';
+import ViewProfile from './components/Customer/ViewProfile/ViewProfile';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -21,6 +22,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/Customer/notifications" element={<NotificationPage />} />
         <Route path="/Customer/notification-detail" element={<NotificationDetail />} />
         <Route path="/Customer/edit-profile" element={<EditProfile />} />
+        <Route path="/Customer/view-profile" element={<ViewProfile />} />
 
       </Routes>
     </BrowserRouter>
