@@ -4,7 +4,7 @@ import Emails from './Emails'
 
 const SupportPage = () => {
 
-    useEffect(() => {
+    /* useEffect(() => {
         const loadScript = () => {
             const script = document.createElement('script');
             script.src = 'https://apis.google.com/js/api.js';
@@ -14,7 +14,7 @@ const SupportPage = () => {
             document.body.appendChild(script);
         };
         loadScript();
-    }, []);
+    }, []); */
 
   return (
     <div>
@@ -23,7 +23,6 @@ const SupportPage = () => {
 
         <Emails />
 
-        
     </div>
   )
 }

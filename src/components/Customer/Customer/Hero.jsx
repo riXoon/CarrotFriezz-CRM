@@ -46,8 +46,8 @@ const Hero = () => {
   };
 
   const products = [
-    { id: 1, name: 'Zsuper Mini', image: product1, rating: '4.9', description: 'Enjoy our Zusper Mini Carrot Friezz priced at ₱58.00 only!' },
-    { id: 2, name: 'Carrot Friezz Mini', image: product2, rating: '4.9', description: 'Enjoy our Carrot Friezz Mini priced at ₱48.00 only!' },
+    { id: 1, name: 'Zsuper Mini', image: product1, rating: '4.9', description: 'Enjoy our Zusper Mini Carrot Friezz priced at ₱59.00 only!' },
+    { id: 2, name: 'Carrot Friezz Mini', image: product2, rating: '4.9', description: 'Enjoy our Carrot Friezz Mini priced at ₱149.00 only!' },
     { id: 3, name: 'Carrot Friezz Midi', image: product3, rating: '4.9', description: 'Enjoy our Carrot Friezz Midi priced at ₱189.00 only!' },
     { id: 4, name: 'Carrot Friezz Maxi', image: product4, rating: '4.9', description: 'Enjoy our Carrot Friezz Maxi priced at ₱229.00 only!' },
   ];

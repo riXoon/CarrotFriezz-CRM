@@ -4,22 +4,24 @@ import { MdKeyboardArrowDown } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import friseUpLogo from '../../../assets/friseup-logo.png';
 import axios from 'axios';
-import NotificationPage from '../Notification/NotificationPage'; // Import the NotificationPage component
+import NotificationPage from '../Notification/NotificationPage';
 
 const NavBar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [showNotifications, setShowNotifications] = useState(false); // State to toggle NotificationPage visibility
-  const [username, setUsername] = useState([]);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [username, setUsername] = useState('');
+  const [notificationCount, setNotificationCount] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
     getUsername();
+    fetchNotificationCount();
   }, []);
 
   const getUsername = () => {
-    const userId = localStorage.getItem("id");
+    const userId = localStorage.getItem('id');
     if (!userId) {
-      console.error("User ID is missing in localStorage.");
+      console.error('User ID is missing in localStorage.');
       return;
     }
     axios
@@ -33,35 +35,49 @@ const NavBar = () => {
         }
       })
       .catch((error) => {
-        console.error("Error fetching username:", error);
+        console.error('Error fetching username:', error);
       });
   };
 
+  const fetchNotificationCount = () => {
+    const userId = localStorage.getItem('id'); // Assuming userId is used for filtering notifications
+    if (!userId) {
+      console.error('User ID is missing in localStorage.');
+      return;
+    }
+  
+    axios
+      .get(`http://localhost:80/friseup_api/notifications.php?userId=${userId}`)
+      .then((response) => {
+        console.log('Notification API response:', response.data); // Debugging log
+        if (response.data.success) {
+          setNotificationCount(response.data.count); // Update notification count
+          console.log('Notification count:', response.data.count);
+        } else {
+          console.error(response.data.message);
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching notifications:', error);
+      });
+  };
+  
+
   const handleLogout = async () => {
     try {
-      await axios.get("http://localhost:80/friseup_api/logout.php");
-      localStorage.removeItem("user");
-      alert("Logged out successfully");
-  
-      // Redirect to the login page and replace the current history
-      navigate("/", { replace: true });
+      await axios.get('http://localhost:80/friseup_api/logout.php');
+      localStorage.removeItem('user');
+      alert('Logged out successfully');
+      navigate('/', { replace: true });
     } catch (error) {
-      console.error("Error during logout:", error);
-      alert("Failed to log out. Please try again.");
+      console.error('Error during logout:', error);
+      alert('Failed to log out. Please try again.');
     }
   };
-  
 
-  const handleEditProfile = () => {
-    navigate('/Customer/edit-profile');
-  }
-  const handleViewProfile = () => {
-    navigate('/Customer/view-profile');
-  }
-
-  const handleHome = () => {
-    navigate('/Customer');
-  };
+  const handleEditProfile = () => navigate('/Customer/edit-profile');
+  const handleViewProfile = () => navigate('/Customer/view-profile');
+  const handleHome = () => navigate('/Customer');
 
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
@@ -96,8 +112,10 @@ const NavBar = () => {
           >
             <FaBell />
             {/* Notification indicator */}
-            {showNotifications && (
-              <span className="absolute top-0 right-0 block h-2 w-2 bg-green-500 rounded-full"></span>
+            {notificationCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold h-5 w-5 flex items-center justify-center rounded-full">
+                {notificationCount}
+              </span>
             )}
           </button>
 
@@ -134,7 +152,6 @@ const NavBar = () => {
                 >
                   Logout
                 </button>
-
               </div>
             )}
           </div>

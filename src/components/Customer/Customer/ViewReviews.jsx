@@ -129,7 +129,7 @@ const ViewReviews = () => {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between">
               <div className='flex gap-5'>
                 <h2 className="text-2xl font-bold text-gray-800 mb-6 md:mb-0">{product?.name}</h2>
-                <p className="text-yellow-500 text-md flex items-center gap-1">
+                <p className="text-orange-500 text-md flex items-center gap-1">
                   {product?.rating ? (
                     [...Array(Math.floor(product?.rating ?? 0))].map((_, i) => <FaStar key={i} />)
                   ) : null}
@@ -168,7 +168,7 @@ const ViewReviews = () => {
                 <div className="flex-1">
                   <h4 className="font-semibold text-gray-800 text-lg flex items-center">
                     {review.firstName} {review.lastName}
-                    <span className="text-yellow-500 ml-2 flex items-center text-sm">
+                    <span className="text-orange-500 ml-2 flex items-center text-sm">
                       {review.stars ? (
                         [...Array(Math.floor(review.stars ?? 0))].map((_, i) => <FaStar key={i} />)
                       ) : null}

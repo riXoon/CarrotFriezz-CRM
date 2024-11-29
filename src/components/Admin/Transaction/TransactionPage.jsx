@@ -36,7 +36,7 @@ const TransactionPage = () => {
   };
 
   return (
-    <div className="dark:bg-gray-900 dark:text-gray-200 min-h-screen">
+    <div className=" dark:text-gray-200 min-h-screen">
       <NavBar />
 
       {/* Heading and Button Container */}

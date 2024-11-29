@@ -1,18 +1,47 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaArrowLeft } from 'react-icons/fa';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import axios from 'axios';
 import NavBar from '../Customer/NavBar';
+import carrotpfp from '../../../assets/carrotpfp.png';
 
 const NotificationDetail = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { notification } = location.state || {};
+  const [notification, setNotification] = useState(location.state?.notification || null);
+  const { id } = useParams(); // Use dynamic routing for notification IDs
+  const [loading, setLoading] = useState(!notification);
 
-  if (!notification) {
-    return <p className="text-gray-600 text-center">Notification not found.</p>;
-  }
+  useEffect(() => {
+    if (!notification) {
+      const fetchNotification = async () => {
+        try {
+          const response = await axios.get(`http://localhost/friseup_api/notification-detail.php?id=${id}`);
+          if (response.data.success) {
+            setNotification(response.data.notification);
+          } else {
+            console.error("Failed to fetch notification:", response.data.message);
+          }
+        } catch (error) {
+          console.error("Error fetching notification:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchNotification();
+    }
+  }, [id, notification]);
 
   const handleBack = () => navigate(-1);
+
+  if (loading) {
+    return <p className="text-center text-gray-500">Loading notification details...</p>;
+  }
+
+  if (!notification) {
+    return <p className="text-center text-gray-500">Notification not found.</p>;
+  }
 
   return (
     <div className="flex flex-col min-h-screen overflow-x-hidden">
@@ -21,32 +50,51 @@ const NotificationDetail = () => {
       <div className="p-20">
         <div className="flex bg-gray-50 text-gray-800 overflow-x-hidden">
           <div className="w-full p-10 flex flex-col relative border rounded-xl shadow-xl">
-            {/* Header Section */}
             <div className="flex items-center space-x-4 mb-4">
-              <FaArrowLeft
-                className="text-green-500 cursor-pointer"
-                onClick={handleBack}
-              />
+              <FaArrowLeft className="text-green-500 cursor-pointer" onClick={handleBack} />
             </div>
-
-            {/* Display Sender's Image */}
             <div className="flex items-center space-x-4 mb-6 mt-6">
-              <img src={notification.image} alt="Sender Logo" className="w-16 h-16 rounded-full" />
+              <img
+                src={carrotpfp}
+                alt="Sender Logo"
+                className="w-16 h-16 rounded-full"
+              />
               <div>
-                <h2 className="text-2xl font-semibold">{notification.sender}</h2>
+                <h2 className="text-2xl font-semibold">Customer Support</h2>
+                <p className="text-sm text-gray-500">Dear {notification.recipient}</p>
               </div>
             </div>
 
-            {/* Message Content with HTML Rendering */}
+            {/* Display the promo image if it exists */}
+            {notification.promoImage && (
+              <div className="mb-6">
+                <img
+                  src={notification.promoImage}
+                  alt="Promo"
+                  className="w-full rounded-lg"
+                />
+              </div>
+            )}
+
+            {/* Display the message */}
             <div className="flex-grow mb-4 mt-10 p-4">
-              {/* Render message as HTML inside a full container */}
               <div
                 className="text-md mb-10 leading-relaxed font-normal"
                 dangerouslySetInnerHTML={{ __html: notification.message }}
               />
             </div>
 
-            {/* Footer / Actions */}
+            <div className="flex mt-4">
+              <h3 className="text-lg font-semibold"></h3>
+            </div>
+
+            {/* Optionally, display a reply */}
+            {/* <div className="flex mt-2">
+              <div
+                className="text-md mb-10 leading-relaxed font-normal"
+                dangerouslySetInnerHTML={{ __html: notification.reply || "No reply yet" }}
+              />
+            </div> */}
           </div>
         </div>
       </div>

@@ -25,7 +25,7 @@ const Table = ({ data, columns }) => {
             {columns.map((col) => (
               <td
                 key={col.key}
-                className="py-3 px-4 text-gray-900 dark:text-gray-200"
+                className="py-3 px-4 text-lg font-bold text-gray-900 dark:text-gray-200"
               >
                 {col.render ? col.render(row) : row[col.key]}
               </td>
@@ -40,32 +40,32 @@ const Table = ({ data, columns }) => {
 const TopProducts = () => {
   const data = [
     {
-      rank: 1,
-      rankIcon: <span className="text-yellow-500 text-3xl">🏆</span>,
+      rank: '',
+      rankIcon: <span className="text-yellow-500 text-5xl">🏆</span>,
       product: 'Zsuper Mini',
-      totalOrders: '14,891',
-      status: 'Sold Out',
+      /* totalOrders: '14,891',
+      status: 'Sold Out', */
     },
     {
-      rank: 2,
-      rankIcon: <span className="text-orange-400 text-3xl">🥈</span>,
+      rank: '',
+      rankIcon: <span className="text-orange-400 text-5xl">🥈</span>,
       product: 'Mini',
-      totalOrders: '12,891',
-      status: 'In Stock',
+      /* totalOrders: '12,891',
+      status: 'In Stock', */
     },
     {
-      rank: 3,
-      rankIcon: <span className="text-gray-500 text-3xl">🥉</span>,
+      rank: '',
+      rankIcon: <span className="text-gray-500 text-5xl">🥉</span>,
       product: 'Midi',
-      totalOrders: '10,832',
-      status: 'In Stock',
+      /* totalOrders: '10,832',
+      status: 'In Stock', */
     },
     {
-      rank: 4,
-      rankIcon: <span className="text-gray-700 text-3xl">⭐</span>,
+      rank: '',
+      rankIcon: <span className="text-gray-700 text-5xl">⭐</span>,
       product: 'Maxi',
-      totalOrders: '8,771',
-      status: 'In Stock',
+      /* totalOrders: '8,771',
+      status: 'In Stock', */
     },
   ];
 
@@ -84,7 +84,7 @@ const TopProducts = () => {
       key: 'product',
       label: 'Product',
     },
-    {
+   /*  {
       key: 'totalOrders',
       label: 'Total Orders',
     },
@@ -100,7 +100,7 @@ const TopProducts = () => {
           {row.status}
         </span>
       ),
-    },
+    }, */
   ];
 
   return (
