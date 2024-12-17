@@ -1,66 +1,107 @@
-import React, { useRef, useEffect } from 'react';
-
-/* Importing all of the parts and tools that we need to create the chart, lahat to galing sa chartjs library */
+import React, { useRef, useEffect, useState } from 'react';
+import axios from 'axios';
 import { Chart, BarElement, CategoryScale, LinearScale, BarController, Title, Tooltip, Legend } from 'chart.js';
 
-// Register Chart.js components, dito parang inaactivate yung inimport na parts/tools from chartjs library para magamit natin sa canvas
 Chart.register(BarElement, CategoryScale, LinearScale, BarController, Title, Tooltip, Legend);
 
 const SalesAnalytics = () => {
-
-  /* Dito ko na crineate yung parang pointers or guide sa layout, yung chartCointainerRef
-  is dito nya pinopoint saang part ng box or container natin ilalagay yung chart, yung canvas
-  ref naman pinopoint mismo kung saan exactly sa container or canvas mag aappear yung chart */
   const chartContainerRef = useRef(null);
   const canvasRef = useRef(null);
+  const chartInstanceRef = useRef(null); // Ref to store the chart instance
+  const [chartData, setChartData] = useState(null);
 
   useEffect(() => {
-    if (chartContainerRef.current) {
-      const ctx = canvasRef.current.getContext('2d');
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:80/friseup_api/sales_data.php'); // Adjust to your API URL
+        const data = response.data;
 
-      // Destroy any previous chart instance to avoid errors
-      if (canvasRef.current.chart) {
-        canvasRef.current.chart.destroy();
-      }
+        if (data.error) {
+          console.error(data.error);
+          return;
+        }
 
-      // Create the chart instance
-      //ctx = context
-      //everything here is built in names from chartjs
-      //dito yung na i store yung data and content ng chart, dito na rin magbebase ng idodraw doon sa canvas.
-      const chart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        const allMonths = [
+          'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+        ];
+
+        const dataMap = data.reduce((acc, item) => {
+          acc[item.month] = {
+            sales: item.sales,
+            customers: item.customers,
+            orders: item.orders,
+          };
+          return acc;
+        }, {});
+
+        const labels = allMonths;
+        const sales = labels.map(month => dataMap[month]?.sales || 0);
+        const customers = labels.map(month => dataMap[month]?.customers || 0);
+        const orders = labels.map(month => dataMap[month]?.orders || 0);
+
+        setChartData({
+          labels,
           datasets: [
             {
               label: 'Sales',
-              data: [300, 500, 200, 800, 1500, 700, 2500],
+              data: sales,
               backgroundColor: 'rgba(29, 174, 0, 0.6)',
               borderColor: 'rgba(34, 197, 94, 1)',
               borderWidth: 1,
             },
             {
               label: 'Customers',
-              data: [150, 300, 100, 400, 700, 350, 1200],
+              data: customers,
               backgroundColor: 'rgba(233, 228, 97, 0.6)',
               borderColor: 'rgba(252, 211, 77, 1)',
               borderWidth: 1,
             },
             {
               label: 'Orders',
-              data: [100, 200, 150, 250, 500, 300, 700],
+              data: orders,
               backgroundColor: 'rgba(254, 130, 53, 0.6)',
               borderColor: 'rgba(251, 146, 60, 1)',
               borderWidth: 1,
             },
           ],
-        },
+        });
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (chartData && chartContainerRef.current) {
+      const ctx = canvasRef.current.getContext('2d');
+  
+      // Destroy the existing chart instance if it exists
+      if (chartInstanceRef.current) {
+        chartInstanceRef.current.destroy();
+      }
+  
+      // Create a new chart instance
+      chartInstanceRef.current = new Chart(ctx, {
+        type: 'bar',
+        data: chartData,
         options: {
           scales: {
             y: {
               beginAtZero: true,
               ticks: {
-                callback: (value) => `₱${value}`,
+                callback: function (value) {
+                  // Always show "₱" by default
+                  const activeSales =
+                    chartInstanceRef.current &&
+                    chartInstanceRef.current.legend &&
+                    chartInstanceRef.current.legend.legendItems.find(
+                      (item) => item.text === 'Sales' && item.hidden
+                    );
+                  return activeSales ? value : `₱${value}`;
+                },
+                color: '#9ca3af', // Fixed text color for light mode
               },
               grid: {
                 display: false,
@@ -70,6 +111,9 @@ const SalesAnalytics = () => {
               grid: {
                 display: false,
               },
+              ticks: {
+                color: '#9ca3af', // Fixed text color for light mode
+              },
             },
           },
           responsive: true,
@@ -78,22 +122,24 @@ const SalesAnalytics = () => {
             legend: {
               display: true,
               position: 'bottom',
+              labels: {
+                color: '#9ca3af', // Fixed legend text color
+              },
+              onClick: (e, legendItem) => {
+                // Default behavior for legend click
+                const index = legendItem.datasetIndex;
+                const meta = chartInstanceRef.current.getDatasetMeta(index);
+                meta.hidden = !meta.hidden;
+                chartInstanceRef.current.update(); // Trigger chart update
+              },
             },
           },
         },
       });
-
-      // Store the chart instance on the canvas for cleanup
-      canvasRef.current.chart = chart;
     }
-
-    // Cleanup chart on component unmount
-   /*  return () => {
-      if (canvasRef.current.chart) {
-        canvasRef.current.chart.destroy();
-      }
-    }; */
-  }, []);
+  }, [chartData]);
+  
+  
 
   return (
     <div ref={chartContainerRef} className="w-full h-full">

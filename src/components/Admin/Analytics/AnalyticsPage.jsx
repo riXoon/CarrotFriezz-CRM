@@ -1,78 +1,66 @@
-import React from 'react'
-import NavBar from '../../../shared/NavBar'
-import VisitorInsights from './VisitorInsights'
-import CustomerFeedback from './CustomerFeedback'
-import DataCard from '../../../shared/DataCard'
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import NavBar from '../../../shared/NavBar';
+import VisitorInsights from './VisitorInsights';
+import CustomerFeedback from './CustomerFeedback';
+import DataCard from '../../../shared/DataCard';
+import TopProducts from './TopProducts';
 
 const AnalyticsPage = () => {
+  const [ratings, setRatings] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    const topProducts = [
-        {product: 'Carrot Friezz', totalOrder: 'Total Orders', status: 'pending', price: '150.00' },
-        {product: 'Carrot Friezz', totalOrder: 'Total Orders', status: 'pending', price: '200.00' },
-        {product: 'Carrot Friezz', totalOrder: 'Total Orders', status: 'pending', price: '150.00' },
-        {product: 'Carrot Friezz', totalOrder: 'Total Orders', status: 'pending', price: '200.00'},
-        {product: 'Carrot Friezz', totalOrder: 'Total Orders', status: 'pending', price: '150.00' },
-        {product: 'Carrot Friezz', totalOrder: 'Total Orders', status: 'pending', price: '200.00' },
-        {product: 'Carrot Friezz', totalOrder: 'Total Orders', status: 'pending', price: '150.00' },
-        {product: 'Carrot Friezz', totalOrder: 'Total Orders', status: 'pending', price: '200.00' },
-      ];
+  const fetchRatings = async () => {
+    try {
+      const response = await axios.get('http://localhost:80/friseup_api/customerRating.php'); // URL for the new PHP file
+      if (response.data.success) {
+        setRatings(response.data.reviews);
+      } else {
+        console.error('Error fetching reviews:', response.data.message);
+      }
+    } catch (error) {
+      console.error('Failed to fetch reviews:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
 
-      const topProductsData = [
-        { key: 'product', label: 'Product' },
-        { key: 'totalOrder', label: 'Total Order' },
-        { key: 'status', label: 'Status' },
-        { key: 'price', label: 'Price', render: (order) => `₱${order.price}` },
+  useEffect(() => {
+    fetchRatings();
+  }, []);
 
-      ];
-
-      const ratings = [
-        {name: 'Liezette Aparri', order: 'Ordered Product', rating: '5 / 5', date: '11/11/24' },
-        {name: 'Liezette Aparri', order: 'Ordered Product', rating: '5 / 5', date: '11/11/24' },
-        {name: 'Liezette Aparri', order: 'Ordered Product', rating: '5 / 5', date: '11/11/24' },
-        {name: 'Liezette Aparri', order: 'Ordered Product', rating: '5 / 5', date: '11/11/24'},
-        {name: 'Liezette Aparri', order: 'Ordered Product', rating: '5 / 5', date: '11/11/24' },
-        {name: 'Liezette Aparri', order: 'Ordered Product', rating: '5 / 5', date: '11/11/24' },
-        {name: 'Liezette Aparri', order: 'Ordered Product', rating: '5 / 5', date: '11/11/24' },
-        {name: 'Liezette Aparri', order: 'Ordered Product', rating: '5 / 5', date: '11/11/24' },
-      ];
-
-      const ratingsData = [
-        { key: 'name', label: 'Name' },
-        { key: 'order', label: 'Order' },
-        { key: 'rating', label: 'Rating' },
-        { key: 'date', label: 'Date'},
-      ];
+  const ratingsData = [
+    { key: 'name', label: 'Name' },
+    { key: 'product', label: 'Product' },
+    { key: 'stars', label: 'Rating' },
+    { key: 'date', label: 'Date' },
+  ];
 
   return (
-    <div>
-        <NavBar />
-
-        <h1 className="font-bold text-2xl mt-6">Analytics</h1>
-        <div className="flex justify-center gap-6 mt-6 flex-wrap">
-            {/* Visitor Insights Card */}
-            <div className="w-full md:w-[48%] lg:w-[48%]">
-                <VisitorInsights />
-            </div>
-
-            {/* Customer Feedback Card */}
-            <div className="w-full md:w-[48%] lg:w-[48%]">
-                <CustomerFeedback />
-            </div>
-
-            {/* Top Products Card */}
-            <div className="w-full md:w-[48%] lg:w-[48%] p-6 bg-white rounded-lg shadow-lg border border-gray-200 h-96 overflow-y-auto mt-6">
-                <DataCard orders={topProducts} columns={topProductsData} title="Top Products" showOrderCount={false} />
-            </div>
-
-            {/* Customer Rating Card */}
-            <div className="w-full md:w-[48%] lg:w-[48%] p-6 bg-white rounded-lg shadow-lg border border-gray-200 h-96 overflow-y-auto mt-6">
-                <DataCard orders={ratings} columns={ratingsData} title="Customer Rating" showOrderCount={false} />
-            </div>
+    <div className="min-h-screen text-gray-900 dark:text-gray-200">
+      <NavBar />
+      <h1 className="font-bold text-2xl mt-6">Analytics</h1>
+      <div className="flex justify-center gap-6 mt-6 flex-wrap">
+        <div className="w-full md:w-[48%] lg:w-[48%]">
+          <VisitorInsights />
         </div>
-
+        <div className="w-full md:w-[48%] lg:w-[48%]">
+          <CustomerFeedback />
+        </div>
+        <div className="w-full md:w-[48%] lg:w-[48%] p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 h-96 overflow-y-auto mt-6">
+          <TopProducts />
+        </div>
+        <div className="w-full md:w-[48%] lg:w-[48%] p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 h-96 overflow-y-auto mt-6">
+          {loading ? (
+            <p className="text-center text-gray-500 dark:text-gray-400">Loading...</p>
+          ) : (
+            <DataCard orders={ratings} columns={ratingsData} title="Customer Ratings" showOrderCount={false} />
+          )}
+        </div>
+      </div>
     </div>
+  );
+};
 
-  )
-}
-
-export default AnalyticsPage
+export default AnalyticsPage;

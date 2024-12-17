@@ -1,37 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaTrash, FaStar, FaRegStar, FaArrowLeft } from 'react-icons/fa';
+import axios from 'axios';
 
 const Emails = () => {
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      sender: 'Riva Mae S. Boongaling',
-      subject: 'I am not satisfied with the service, I demand a refund NOW!...',
-      content: 'I am not satisfied with the service, I demand a refund NOW!...',
-      email: 'rivamaesboongaling@gmail.com',
-      phone: '09458997821',
-      time: '1:18 PM',
-      isSelected: false,
-      isFavorite: false,
-    },
-    {
-      id: 2,
-      sender: 'Chino Pasia',
-      subject: 'wrong item. need refund. plz fix this thx',
-      content: 'wrong item. need refund. plz fix this thx',
-      email: 'chinopasia@example.com',
-      phone: '0987654321',
-      time: '2:45 PM',
-      isSelected: false,
-      isFavorite: false,
-    },
-  ]);
-
+  const [messages, setMessages] = useState([]);
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [reply, setReply] = useState('');
   const [showReplyBox, setShowReplyBox] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(true);
+
+  useEffect(() => {
+    axios
+      .get('http://localhost/friseup_api/report.php')
+      .then((response) => {
+        if (response.data.success) {
+          const fetchedMessages = response.data.data.map((message) => ({
+            id: message.id,
+            sender: message.name,
+            subject: message.massage.slice(0, 50),
+            content: message.massage,
+            email: message.email,
+            phone: message.phone,
+            isSelected: false,
+            isFavorite: false,
+          }));
+          setMessages(fetchedMessages);
+        } else {
+          console.error('Failed to fetch messages:', response.data.message);
+        }
+        setIsFetching(false);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+        setIsFetching(false);
+      });
+  }, []);
 
   const handleSelectMessage = (message) => {
     setSelectedMessage(message);
@@ -40,16 +45,43 @@ const Emails = () => {
   };
 
   const handleSendReply = () => {
+    if (!selectedMessage) {
+      alert('No message selected.');
+      return;
+    }
+
     if (showReplyBox) {
-      setIsLoading(true); // Start loading when reply is sent
-      setTimeout(() => {
-        alert(`Reply sent: ${reply}`);
-        setReply('');
-        setShowReplyBox(false);
-        setIsLoading(false); // Stop loading after a brief delay (simulating sending)
-      }, 2000); // Simulate sending for 2 seconds
+      if (!reply.trim()) {
+        alert('Reply cannot be empty.');
+        return;
+      }
+
+      setIsLoading(true);
+
+      axios
+        .post('http://localhost/friseup_api/reply.php', {
+          report_id: selectedMessage.id,
+          reply: reply.trim(),
+        })
+        .then((response) => {
+          if (response.data.success) {
+            alert('Reply sent successfully.');
+            setReply('');
+            setShowReplyBox(false);
+          } else {
+            console.error('Failed to send reply:', response.data.message);
+            alert(response.data.message);
+          }
+        })
+        .catch((error) => {
+          console.error('Error while sending reply:', error);
+          alert('Failed to send reply.');
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
     } else {
-      setShowReplyBox(true); // Show reply box if it’s not already visible
+      setShowReplyBox(true);
     }
   };
 
@@ -57,62 +89,54 @@ const Emails = () => {
     setSelectedMessage(null);
   };
 
-  const handleSelectAll = () => {
-    setSelectAll(!selectAll);
-    setMessages(messages.map((msg) => ({ ...msg, isSelected: !selectAll })));
-  };
-
-  const handleSelect = (id) => {
-    setMessages(
-      messages.map((msg) =>
-        msg.id === id ? { ...msg, isSelected: !msg.isSelected } : msg
-      )
-    );
-  };
-
-  const toggleFavorite = (id) => {
-    setMessages(
-      messages.map((msg) =>
-        msg.id === id ? { ...msg, isFavorite: !msg.isFavorite } : msg
-      )
-    );
-  };
+  if (isFetching) {
+    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+  }
 
   return (
-    <div className="flex h-screen bg-gray-50 text-gray-800">
+    <div className="flex max-h-[31rem] bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
       {selectedMessage === null ? (
-        // List View
         <div className="w-full p-6">
           <div className="flex items-center mb-4 space-x-4">
             <input
               type="checkbox"
-              className="form-checkbox h-5 w-5 text-green-500"
+              className="form-checkbox h-5 w-5 text-green-500 dark:text-green-400"
               checked={selectAll}
-              onChange={handleSelectAll}
+              onChange={() => setSelectAll(!selectAll)}
             />
-            <FaTrash className="text-green-500 cursor-pointer hover:text-red-500" />
+            <FaTrash className="text-green-500 dark:text-green-400 cursor-pointer hover:text-red-500" />
           </div>
-          <div className="max-h-96 overflow-y-auto">
+          <div className="max-h-[26rem] overflow-y-auto">
             {messages.map((message) => (
               <div
                 key={message.id}
-                className="flex items-center p-4 border-b border-gray-200 hover:bg-gray-100 transition duration-200"
+                className="flex items-center p-4 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition duration-200"
               >
                 <input
                   type="checkbox"
-                  className="form-checkbox h-5 w-5 text-green-500 mr-4"
+                  className="form-checkbox h-5 w-5 text-green-500 dark:text-green-400 mr-4"
                   checked={message.isSelected}
-                  onChange={(e) => {
-                    e.stopPropagation();
-                    handleSelect(message.id);
-                  }}
+                  onChange={() =>
+                    setMessages(
+                      messages.map((msg) =>
+                        msg.id === message.id
+                          ? { ...msg, isSelected: !msg.isSelected }
+                          : msg
+                      )
+                    )
+                  }
                 />
                 <div
-                  className="mr-4 text-green-500 cursor-pointer"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleFavorite(message.id);
-                  }}
+                  className="mr-4 text-green-500 dark:text-green-400 cursor-pointer"
+                  onClick={() =>
+                    setMessages(
+                      messages.map((msg) =>
+                        msg.id === message.id
+                          ? { ...msg, isFavorite: !msg.isFavorite }
+                          : msg
+                      )
+                    )
+                  }
                 >
                   {message.isFavorite ? <FaStar /> : <FaRegStar />}
                 </div>
@@ -122,61 +146,69 @@ const Emails = () => {
                 >
                   <div className="flex justify-between items-center">
                     <span className="font-medium text-lg">{message.sender}</span>
-                    <span className="text-sm text-gray-500">{message.time}</span>
                   </div>
-                  <p className="text-gray-600">{message.subject}</p>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    {message.subject}
+                  </p>
                 </div>
               </div>
             ))}
           </div>
         </div>
       ) : (
-        // Detail View
-        <div className="w-full p-6 flex flex-col relative">
+        <div className="w-full p-6 flex flex-col">
           <div className="flex items-center space-x-4 mb-4">
             <FaArrowLeft
-              className="text-green-500 cursor-pointer"
+              className="text-green-500 dark:text-green-400 cursor-pointer"
               onClick={handleBack}
             />
-            <FaTrash className="text-green-500 cursor-pointer hover:text-red-500" />
+            <FaTrash className="text-green-500 dark:text-green-400 cursor-pointer hover:text-red-500" />
             <div
-              className="text-green-500 cursor-pointer"
-              onClick={() => toggleFavorite(selectedMessage.id)}
+              className="text-green-500 dark:text-green-400 cursor-pointer"
+              onClick={() =>
+                setMessages(
+                  messages.map((msg) =>
+                    msg.id === selectedMessage.id
+                      ? { ...msg, isFavorite: !msg.isFavorite }
+                      : msg
+                  )
+                )
+              }
             >
               {selectedMessage.isFavorite ? <FaStar /> : <FaRegStar />}
             </div>
           </div>
           <div className="mb-4">
-            <h2 className="text-2xl font-semibold">{selectedMessage.sender}</h2>
-            <p className="text-sm text-gray-500">{selectedMessage.email}</p>
-            <p className="text-sm text-gray-500">{selectedMessage.phone}</p>
+            <h2 className="text-xl font-semibold">{selectedMessage.sender}</h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              {selectedMessage.email}
+            </p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              {selectedMessage.phone}
+            </p>
           </div>
-          <div className="flex-grow mb-4">
-            <p className="text-lg">{selectedMessage.content}</p>
+          <div className="flex-grow mb-4 overflow-y-auto">
+            <p className="text-base">{selectedMessage.content}</p>
           </div>
-          <div className="absolute bottom-6 left-6">
+          <div className="flex items-center space-x-4 mt-4">
             {showReplyBox && (
               <textarea
-                className="w-full h-24 p-3 border border-green-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
+                className="flex-grow h-24 p-3 border border-green-500 dark:border-green-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:focus:ring-green-400 resize-none bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200"
                 placeholder="Write your reply..."
                 value={reply}
                 onChange={(e) => setReply(e.target.value)}
               />
             )}
             <button
-              className={`mt-2 px-4 py-2 ${
+              className={`px-4 py-2 ${
                 isLoading
-                  ? 'bg-gray-500 cursor-wait'
-                  : 'bg-green-500 hover:bg-green-600'
-              } text-white rounded-lg transition duration-300`}
+                  ? 'bg-gray-500 dark:bg-gray-600 cursor-wait'
+                  : 'bg-green-500 hover:bg-green-600 dark:bg-green-400 dark:hover:bg-green-500'
+              } text-white dark:text-gray-900 rounded-lg transition duration-300`}
               onClick={handleSendReply}
-              disabled={isLoading} // Disable button when loading
+              disabled={isLoading}
             >
-              {isLoading ? (
-                <span>Sending...</span>
-              ) : (
-                <span>{showReplyBox ? 'Send Reply' : 'Reply'}</span>
-              )}
+              {isLoading ? 'Sending...' : showReplyBox ? 'Send Reply' : 'Reply'}
             </button>
           </div>
         </div>

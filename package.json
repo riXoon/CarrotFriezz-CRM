@@ -4,15 +4,17 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "proxy": "http://localhost"
   },
   "dependencies": {
     "@heroicons/react": "^2.1.5",
     "axios": "^1.7.7",
     "chart.js": "^4.4.6",
+    "framer-motion": "^11.13.1",
     "gapi-script": "^1.2.0",
     "react": "^18.3.1",
     "react-chartjs-2": "^5.2.0",
