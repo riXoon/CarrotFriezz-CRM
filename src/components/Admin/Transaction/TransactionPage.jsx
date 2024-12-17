@@ -18,6 +18,7 @@ const TransactionPage = () => {
   };
 
   const [transactions, setTransactions] = useState([]);
+  const [filteredTransactions, setFilteredTransactions] = useState([]); // Filtered transactions for search
 
   useEffect(() => {
     getTransactions();
@@ -28,16 +29,28 @@ const TransactionPage = () => {
       .get("http://localhost:80/friseup_api/transaction")
       .then((response) => {
         console.log(response.data);
-        setTransactions(response.data.transactions); // Extract transactions array
+        setTransactions(response.data.transactions); // Set full transaction list
+        setFilteredTransactions(response.data.transactions); // Set filtered transactions to initial list
       })
       .catch((error) => {
         console.error("Error fetching transactions:", error);
       });
   };
 
+  const handleSearch = (query) => {
+    const lowercasedQuery = query.toLowerCase();
+    const filtered = transactions.filter((transaction) =>
+      Object.values(transaction).some((value) =>
+        String(value).toLowerCase().includes(lowercasedQuery)
+      )
+    );
+    setFilteredTransactions(filtered);
+  };
+
   return (
-    <div className=" dark:text-gray-200 min-h-screen">
-      <NavBar />
+    <div className="dark:text-gray-200 max-h-[20rem]">
+      {/* Pass handleSearch to NavBar */}
+      <NavBar showSearchBar={true} onSearch={handleSearch} />
 
       {/* Heading and Button Container */}
       <div className="flex justify-between items-center mt-6">
@@ -63,7 +76,7 @@ const TransactionPage = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {transactions && transactions.length === 0 ? (
+                  {filteredTransactions && filteredTransactions.length === 0 ? (
                     <tr>
                       <td
                         colSpan="8"
@@ -73,14 +86,16 @@ const TransactionPage = () => {
                       </td>
                     </tr>
                   ) : (
-                    transactions &&
-                    transactions.map((transaction, index) => (
+                    filteredTransactions &&
+                    filteredTransactions.map((transaction, index) => (
                       <tr
                         key={index}
                         className="border-b border-gray-200 text-gray-600 text-sm dark:border-gray-700 dark:text-gray-300"
                       >
                         <td className="py-3 px-6 text-left">{String(transaction.id).padStart(4, '0')}</td>
-                        <td className="py-3 px-6 text-left">{transaction.firstName} {transaction.lastName}</td>
+                        <td className="py-3 px-6 text-left">
+                          {transaction.firstName} {transaction.lastName}
+                        </td>
                         <td className="py-3 px-6 text-left">{formatDate(transaction.date)}</td>
                         <td className="py-3 px-6 text-left">{transaction.items}</td>
                         <td className="py-3 px-6 text-left">₱ {transaction.totalPrice}</td>

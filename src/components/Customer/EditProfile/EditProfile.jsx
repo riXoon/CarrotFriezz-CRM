@@ -40,14 +40,14 @@ const EditProfile = () => {
       <NavBar />
       <div className="relative w-full bg-gray-50 mt-6">
         {/* Banner */}
-        <div className="h-48 relative">
-          <img src={carrotBanner} alt="Banner" className="w-full" />
+        <div className="relative h-[200px] sm:h-[300px] md:h-[350px]">
+          <img src={carrotBanner} alt="Banner" className="w-full h-full object-cover" />
           {/* Profile icon */}
-          <div className="bottom-[13rem] left-1/2 transform -translate-x-1/2 rounded-full w-60 h-60 bg-white flex justify-center items-center shadow-md relative">
+          <div className="absolute bottom-[-30px] sm:bottom-[-40px] left-1/2 transform -translate-x-1/2 rounded-full w-32 sm:w-40 h-32 sm:h-40 bg-white flex justify-center items-center shadow-md">
             <img
               src={profilePic}
               alt="Profile"
-              className="rounded-full w-52 h-52 border-4 border-orange-400"
+              className="rounded-full w-28 sm:w-36 h-28 sm:h-36 border-4 border-orange-400"
             />
             {/* Edit Icon */}
             <button
@@ -61,12 +61,12 @@ const EditProfile = () => {
         </div>
 
         {/* Edit Profile Form */}
-        <div className="mt-32 px-6 py-8 max-w-3xl mx-auto bg-white shadow-md rounded-lg">
-          <h2 className="text-xl font-bold mb-6 text-gray-800 text-center">
+        <div className="mt-16 px-6 py-8 max-w-3xl mx-auto bg-white shadow-md rounded-lg">
+          <h2 className="text-xl sm:text-2xl font-bold mb-6 text-gray-800 text-center">
             Edit Profile
           </h2>
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="relative">
                 <input
                   type="text"
@@ -90,7 +90,7 @@ const EditProfile = () => {
                 <span className="absolute top-3 right-3 text-orange-400">✏️</span>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="relative">
                 <input
                   type="password"
@@ -129,7 +129,7 @@ const EditProfile = () => {
       {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg w-80 shadow-lg relative">
+          <div className="bg-white p-6 rounded-lg w-80 sm:w-96 shadow-lg relative">
             <button
               onClick={() => setIsModalOpen(false)}
               className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
@@ -138,25 +138,24 @@ const EditProfile = () => {
             </button>
             <h3 className="text-lg font-bold text-center mb-4">Change Avatar</h3>
             <div className="flex justify-around">
-            <button
+              <button
                 onClick={() => handleProfilePicChange(avatar1)}
                 className="rounded-full bg-yellow-200 p-3 hover:scale-105 transform"
-                >
+              >
                 <img src={avatar1} alt="Avatar 1" />
-                </button>
-                <button
+              </button>
+              <button
                 onClick={() => handleProfilePicChange(avatar2)}
                 className="rounded-full bg-pink-200 p-3 hover:scale-105 transform"
-                >
+              >
                 <img src={avatar2} alt="Avatar 2" />
-                </button>
-                <button
+              </button>
+              <button
                 onClick={() => handleProfilePicChange(avatar3)}
                 className="rounded-full bg-blue-200 p-3 hover:scale-105 transform"
-                >
+              >
                 <img src={avatar3} alt="Avatar 3" />
-            </button>
-
+              </button>
             </div>
             <button
               onClick={() => setIsModalOpen(false)}

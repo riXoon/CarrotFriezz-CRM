@@ -17,7 +17,7 @@ const Emails = () => {
       .then((response) => {
         if (response.data.success) {
           const fetchedMessages = response.data.data.map((message) => ({
-            id: message.id, // Include the message ID
+            id: message.id,
             sender: message.name,
             subject: message.massage.slice(0, 50),
             content: message.massage,
@@ -58,11 +58,10 @@ const Emails = () => {
 
       setIsLoading(true);
 
-      // Send reply to the backend
       axios
         .post('http://localhost/friseup_api/reply.php', {
-          report_id: selectedMessage.id, // Pass the message ID
-          reply: reply.trim(), // Pass the reply message
+          report_id: selectedMessage.id,
+          reply: reply.trim(),
         })
         .then((response) => {
           if (response.data.success) {
@@ -90,14 +89,12 @@ const Emails = () => {
     setSelectedMessage(null);
   };
 
-  // Other functions remain unchanged
-
   if (isFetching) {
     return <div className="flex justify-center items-center h-screen">Loading...</div>;
   }
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+    <div className="flex max-h-[31rem] bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
       {selectedMessage === null ? (
         <div className="w-full p-6">
           <div className="flex items-center mb-4 space-x-4">
@@ -109,7 +106,7 @@ const Emails = () => {
             />
             <FaTrash className="text-green-500 dark:text-green-400 cursor-pointer hover:text-red-500" />
           </div>
-          <div className="max-h-96 overflow-y-auto">
+          <div className="max-h-[26rem] overflow-y-auto">
             {messages.map((message) => (
               <div
                 key={message.id}
@@ -159,7 +156,7 @@ const Emails = () => {
           </div>
         </div>
       ) : (
-        <div className="w-full p-6 flex flex-col relative">
+        <div className="w-full p-6 flex flex-col">
           <div className="flex items-center space-x-4 mb-4">
             <FaArrowLeft
               className="text-green-500 dark:text-green-400 cursor-pointer"
@@ -182,7 +179,7 @@ const Emails = () => {
             </div>
           </div>
           <div className="mb-4">
-            <h2 className="text-2xl font-semibold">{selectedMessage.sender}</h2>
+            <h2 className="text-xl font-semibold">{selectedMessage.sender}</h2>
             <p className="text-sm text-gray-500 dark:text-gray-400">
               {selectedMessage.email}
             </p>
@@ -190,20 +187,20 @@ const Emails = () => {
               {selectedMessage.phone}
             </p>
           </div>
-          <div className="flex-grow mb-4">
-            <p className="text-lg">{selectedMessage.content}</p>
+          <div className="flex-grow mb-4 overflow-y-auto">
+            <p className="text-base">{selectedMessage.content}</p>
           </div>
-          <div className="absolute bottom-6 left-6">
+          <div className="flex items-center space-x-4 mt-4">
             {showReplyBox && (
               <textarea
-                className="w-full h-24 p-3 border border-green-500 dark:border-green-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:focus:ring-green-400 resize-none bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200"
+                className="flex-grow h-24 p-3 border border-green-500 dark:border-green-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:focus:ring-green-400 resize-none bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200"
                 placeholder="Write your reply..."
                 value={reply}
                 onChange={(e) => setReply(e.target.value)}
               />
             )}
             <button
-              className={`mt-2 px-4 py-2 ${
+              className={`px-4 py-2 ${
                 isLoading
                   ? 'bg-gray-500 dark:bg-gray-600 cursor-wait'
                   : 'bg-green-500 hover:bg-green-600 dark:bg-green-400 dark:hover:bg-green-500'

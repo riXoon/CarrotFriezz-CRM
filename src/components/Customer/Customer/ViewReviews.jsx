@@ -8,7 +8,7 @@ import ReportModal from '../../Customer/Customer/ReportModal';
 
 const ViewReviews = () => {
   const location = useLocation();
-  const { product } = location.state || {};  // Destructure product, fallback to an empty object
+  const { product } = location.state || {};
 
   const [username, setUsername] = useState("");
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
@@ -65,14 +65,11 @@ const ViewReviews = () => {
         .catch((error) => console.error('Error fetching reviews:', error));
     }
   }, [product?.id]);
-  
-  
-  
 
   const addReview = () => {
     if (!product || !product.id) {
       console.error("Product ID is not available.");
-      return;  // Return early if product or product.id is not available
+      return;
     }
 
     if (newComment.trim()) {
@@ -82,25 +79,23 @@ const ViewReviews = () => {
         rating,
         date: new Date().toLocaleDateString(),
         comment: newComment,
-        productId: product?.id,  // Ensure the product ID is included
+        productId: product?.id,
       };
 
-      // Submit the review to the backend
       axios.post('http://localhost:80/friseup_api/reviews.php', newReview)
-      .then(response => {
-        if (response.data.status === 1) {
-          setComments([newReview, ...comments]);  // Add the new review to the local state
-          setNewComment(""); // Reset the new comment field
-          setIsModalOpen(false); // Close the modal
-          fetchReviews(); // Optionally, call the function that fetches reviews from the server again
-        } else {
-          console.error(response.data.message);
-        }
-      })
-      .catch(error => {
-        console.error("Error adding review:", error);
-      });
-    
+        .then(response => {
+          if (response.data.status === 1) {
+            setComments([newReview, ...comments]);
+            setNewComment("");
+            setIsModalOpen(false);
+            fetchReviews();
+          } else {
+            console.error(response.data.message);
+          }
+        })
+        .catch(error => {
+          console.error("Error adding review:", error);
+        });
     }
   };
 
@@ -108,38 +103,40 @@ const ViewReviews = () => {
 
   const displayedComments = showMoreReviews ? comments : comments.slice(0, 2);
 
-
   return (
     <div>
       <NavBar />
-
       <div className="w-full min-h-screen bg-gray-100 font-sans">
         <div className="w-full max-w-full mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
           <div className="w-full flex justify-center">
-            <div className="relative w-full max-w-5xl h-[30rem]">
+            <div className="relative w-full max-w-5xl h-[30rem] mt-10">
               <img
                 src={product?.image}
                 alt={product?.name}
-                className="w-full h-full object-contain object-center"
+                className="w-full h-full object-cover md:object-contain object-center"
               />
             </div>
           </div>
 
           <div className="px-8 py-12 lg:px-24 lg:py-16">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-              <div className='flex gap-5'>
-                <h2 className="text-2xl font-bold text-gray-800 mb-6 md:mb-0">{product?.name}</h2>
+              <div className="flex flex-col md:flex-row md:items-center gap-4">
+                <h2 className="text-2xl font-bold text-gray-800 mb-0 md:mb-0">{product?.name}</h2>
+                {/* Stars Rating */}
                 <p className="text-orange-500 text-md flex items-center gap-1">
                   {product?.rating ? (
-                    [...Array(Math.floor(product?.rating ?? 0))].map((_, i) => <FaStar key={i} />)
+                    [...Array(Math.floor(product?.rating ?? 0))].map((_, i) => (
+                      <FaStar key={i} />
+                    ))
                   ) : null}
                   {product?.rating && product?.rating % 1 ? <FaStarHalfAlt /> : null}
                   <span className="ml-2 text-gray-700">{product?.rating}</span>
                 </p>
               </div>
-              <div className="flex items-center space-x-6">
+
+              <div className="flex items-center space-x-6 mt-4 md:mt-0">
                 <button
-                  className=" bg-transparent border border-green-500 text-sm text-green-500 px-4 py-1 rounded-xl shadow-lg hover:bg-green-600 transition duration-300 hover:text-white "
+                  className="bg-transparent border border-green-500 text-sm text-green-500 px-4 py-1 rounded-xl shadow-lg hover:bg-green-600 transition duration-300 hover:text-white"
                   onClick={handleModalOpen}
                 >
                   Add a Review
@@ -150,52 +147,55 @@ const ViewReviews = () => {
                 >
                   <FaHeart />
                 </button>
-                <FaExclamationTriangle className="text-yellow-500 text-2xl cursor-pointer" 
-                  onClick ={() => setIsReportModalOpen(true)}/>
+                <FaExclamationTriangle
+                  className="text-yellow-500 text-2xl cursor-pointer"
+                  onClick={() => setIsReportModalOpen(true)}
+                />
               </div>
             </div>
-            <p className='mt-5'>Carrot Friezz’s buy 1 take 2 something something priced at ₱59.00 only!</p>
+
+            <p className="mt-5 text-sm sm:text-base">
+              Carrot Friezz’s buy 1 take 2 something something priced at ₱59.00 only!
+            </p>
           </div>
 
+          {/* Reviews Section */}
           <div className="px-8 md:px-24 py-12 bg-gray-50">
-            <h1 className='text-2xl font-semibold mb-8'>Reviews</h1>
+            <h1 className="text-2xl font-semibold mb-8">Reviews</h1>
             {displayedComments.map((review) => (
-            <div key={review.id} className="border border-gray-200 rounded-lg p-8 mb-8 bg-white shadow-md">
-              <div className="flex items-center mb-6">
-                <div className="w-16 h-16 rounded-full bg-gray-300 mr-6 flex-shrink-0 flex items-center justify-center text-gray-500 text-3xl">
-                  👤
+              <div key={review.id} className="border border-gray-200 rounded-lg p-8 mb-8 bg-white shadow-md">
+                <div className="flex items-center mb-6">
+                  <div className="w-16 h-16 rounded-full bg-gray-300 mr-6 flex-shrink-0 flex items-center justify-center text-gray-500 text-3xl">
+                    👤
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-gray-800 text-lg flex items-center">
+                      {review.firstName} {review.lastName}
+                      <span className="text-orange-500 ml-2 flex items-center text-sm">
+                        {review.stars ? (
+                          [...Array(Math.floor(review.stars ?? 0))].map((_, i) => <FaStar key={i} />)
+                        ) : null}
+                        {review.stars && review.stars % 1 ? <FaStarHalfAlt /> : null}
+                      </span>
+                    </h4>
+                    <span className="text-gray-400 text-sm">{review.date}</span>
+                  </div>
                 </div>
-                <div className="flex-1">
-                  <h4 className="font-semibold text-gray-800 text-lg flex items-center">
-                    {review.firstName} {review.lastName}
-                    <span className="text-orange-500 ml-2 flex items-center text-sm">
-                      {review.stars ? (
-                        [...Array(Math.floor(review.stars ?? 0))].map((_, i) => <FaStar key={i} />)
-                      ) : null}
-                      {review.stars && review.stars% 1 ? <FaStarHalfAlt /> : null}
-                    </span>
-                  </h4>
-                  <span className="text-gray-400 text-sm">{review.date}</span>
-                </div>
+
+                <div className="text-gray-600">{review.review}</div>
               </div>
+            ))}
 
-              <div className="text-gray-600">{review.review}</div>
-            </div>
-          ))}
-
-
-
-          {comments.length > 2 && !showMoreReviews && (
-            <div className="text-center mt-4">
-              <button
-                onClick={() => setShowMoreReviews(true)}
-                className="bg-green-500 text-white border border-green-500 px-4 py-2 rounded-xl hover:bg-transparent hover:text-green-500 transition duration-500"
-              >
-                See More Reviews
-              </button>
-            </div>
-          )}
-
+            {comments.length > 2 && !showMoreReviews && (
+              <div className="text-center mt-4">
+                <button
+                  onClick={() => setShowMoreReviews(true)}
+                  className="bg-green-500 text-white border border-green-500 px-4 py-2 rounded-xl hover:bg-transparent hover:text-green-500 transition duration-500"
+                >
+                  See More Reviews
+                </button>
+              </div>
+            )}
 
             {showMoreReviews && (
               <div className="text-center mt-4">
@@ -209,21 +209,22 @@ const ViewReviews = () => {
             )}
           </div>
 
-          <CustomerModal 
-            isOpen={isModalOpen} 
-            onClose={handleModalClose} 
-            title="Add Your Review" 
-            rating={rating} 
-            onRatingChange={handleRatingChange}  // Pass handleRatingChange function here
-            newComment={newComment} 
-            setNewComment={setNewComment} 
-            productId={product?.id}  // Make sure productId is passed if needed
-            onSubmit={addReview}  // Pass the onSubmit prop as well
+          <CustomerModal
+            isOpen={isModalOpen}
+            onClose={handleModalClose}
+            title="Add Your Review"
+            rating={rating}
+            onRatingChange={handleRatingChange}
+            newComment={newComment}
+            setNewComment={setNewComment}
+            productId={product?.id}
+            onSubmit={addReview}
           />
 
           <ReportModal isOpen={isReportModalOpen} onClose={() => setIsReportModalOpen(false)} />
         </div>
       </div>
+
     </div>
   );
 };

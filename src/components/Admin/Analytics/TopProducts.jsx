@@ -1,4 +1,8 @@
 import React from 'react';
+import rank1 from '../../../assets/rank1.png';
+import rank2 from '../../../assets/rank2.png';
+import rank3 from '../../../assets/rank3.png';
+import rank4 from '../../../assets/rank4.png';
 
 const Table = ({ data, columns }) => {
   if (!data || data.length === 0) {
@@ -41,28 +45,28 @@ const TopProducts = () => {
   const data = [
     {
       rank: '',
-      rankIcon: <span className="text-yellow-500 text-5xl">🏆</span>,
+      rankIcon: rank1,
       product: 'Zsuper Mini',
       /* totalOrders: '14,891',
       status: 'Sold Out', */
     },
     {
       rank: '',
-      rankIcon: <span className="text-orange-400 text-5xl">🥈</span>,
+      rankIcon: rank2,
       product: 'Mini',
       /* totalOrders: '12,891',
       status: 'In Stock', */
     },
     {
       rank: '',
-      rankIcon: <span className="text-gray-500 text-5xl">🥉</span>,
+      rankIcon: rank3,
       product: 'Midi',
       /* totalOrders: '10,832',
       status: 'In Stock', */
     },
     {
       rank: '',
-      rankIcon: <span className="text-gray-700 text-5xl">⭐</span>,
+      rankIcon: rank4,
       product: 'Maxi',
       /* totalOrders: '8,771',
       status: 'In Stock', */
@@ -74,33 +78,14 @@ const TopProducts = () => {
       key: 'rank',
       label: 'Rank',
       render: (row) => (
-        <span className="flex items-center">
-          {row.rankIcon}
-          <span className="ml-2">{row.rank}</span>
-        </span>
+        <img src={row.rankIcon} className='w-12' />
       ),
     },
     {
       key: 'product',
       label: 'Product',
     },
-   /*  {
-      key: 'totalOrders',
-      label: 'Total Orders',
-    },
-    {
-      key: 'status',
-      label: 'Status',
-      render: (row) => (
-        <span
-          className={`font-semibold ${
-            row.status === 'Sold Out' ? 'text-red-500' : 'text-green-600'
-          }`}
-        >
-          {row.status}
-        </span>
-      ),
-    }, */
+
   ];
 
   return (

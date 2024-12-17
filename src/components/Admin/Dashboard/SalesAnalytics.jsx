@@ -7,6 +7,7 @@ Chart.register(BarElement, CategoryScale, LinearScale, BarController, Title, Too
 const SalesAnalytics = () => {
   const chartContainerRef = useRef(null);
   const canvasRef = useRef(null);
+  const chartInstanceRef = useRef(null); // Ref to store the chart instance
   const [chartData, setChartData] = useState(null);
 
   useEffect(() => {
@@ -35,7 +36,7 @@ const SalesAnalytics = () => {
 
         const labels = allMonths;
         const sales = labels.map(month => dataMap[month]?.sales || 0);
-        /* const customers = labels.map(month => dataMap[month]?.customers || 0); */
+        const customers = labels.map(month => dataMap[month]?.customers || 0);
         const orders = labels.map(month => dataMap[month]?.orders || 0);
 
         setChartData({
@@ -48,13 +49,13 @@ const SalesAnalytics = () => {
               borderColor: 'rgba(34, 197, 94, 1)',
               borderWidth: 1,
             },
-            /* {
+            {
               label: 'Customers',
               data: customers,
               backgroundColor: 'rgba(233, 228, 97, 0.6)',
               borderColor: 'rgba(252, 211, 77, 1)',
               borderWidth: 1,
-            }, */
+            },
             {
               label: 'Orders',
               data: orders,
@@ -75,12 +76,14 @@ const SalesAnalytics = () => {
   useEffect(() => {
     if (chartData && chartContainerRef.current) {
       const ctx = canvasRef.current.getContext('2d');
-
-      if (canvasRef.current.chart) {
-        canvasRef.current.chart.destroy();
+  
+      // Destroy the existing chart instance if it exists
+      if (chartInstanceRef.current) {
+        chartInstanceRef.current.destroy();
       }
-
-      const chart = new Chart(ctx, {
+  
+      // Create a new chart instance
+      chartInstanceRef.current = new Chart(ctx, {
         type: 'bar',
         data: chartData,
         options: {
@@ -88,7 +91,16 @@ const SalesAnalytics = () => {
             y: {
               beginAtZero: true,
               ticks: {
-                callback: value => `₱${value}`,
+                callback: function (value) {
+                  // Always show "₱" by default
+                  const activeSales =
+                    chartInstanceRef.current &&
+                    chartInstanceRef.current.legend &&
+                    chartInstanceRef.current.legend.legendItems.find(
+                      (item) => item.text === 'Sales' && item.hidden
+                    );
+                  return activeSales ? value : `₱${value}`;
+                },
                 color: '#9ca3af', // Fixed text color for light mode
               },
               grid: {
@@ -113,14 +125,21 @@ const SalesAnalytics = () => {
               labels: {
                 color: '#9ca3af', // Fixed legend text color
               },
+              onClick: (e, legendItem) => {
+                // Default behavior for legend click
+                const index = legendItem.datasetIndex;
+                const meta = chartInstanceRef.current.getDatasetMeta(index);
+                meta.hidden = !meta.hidden;
+                chartInstanceRef.current.update(); // Trigger chart update
+              },
             },
           },
         },
       });
-
-      canvasRef.current.chart = chart;
     }
   }, [chartData]);
+  
+  
 
   return (
     <div ref={chartContainerRef} className="w-full h-full">

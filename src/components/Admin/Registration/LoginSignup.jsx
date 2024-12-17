@@ -32,19 +32,19 @@ function LoginSignup() {
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-
+  
     if (!firstName || !lastName || !email || !password || !confirmPassword || !contactNum) {
       setModalMessage("Please fill in all the fields.");
       setShowModal(true);
       return;
     }
-
+  
     if (password !== confirmPassword) {
       setModalMessage("Passwords do not match.");
       setShowModal(true);
       return;
     }
-
+  
     const payload = {
       firstName,
       lastName,
@@ -53,28 +53,37 @@ function LoginSignup() {
       contactNum,
       role,
     };
-
+  
     try {
       setIsLoading(true);
-      await axios.post("http://localhost/friseup_api/signup", payload, {
+      const response = await axios.post("http://localhost/friseup_api/signup", payload, {
         headers: {
           "Content-Type": "application/json",
         },
       });
-        setShowLikeConfirmation(true); // Show animated checkmark modal
+  
+      const { status, message } = response.data;
+      if (status === 1) {
+        setSuccessMessage("Signup Successful!"); // Set success message
+        setShowLikeConfirmation(true);
         setTimeout(() => {
-        setSuccessMessage("Signup Successful!");
-        setModalMessage("SignUp Successful!");
+          setShowLikeConfirmation(false);
+          setIsSignUp(false);
+        }, 2000);
+      } else {
+        setModalMessage(message);
         setShowModal(true);
-        setShowLikeConfirmation(false);
-        setIsSignUp(false); // Switch to login form
-      }, 2000); // Close after animation
+      }
     } catch (error) {
       console.error("Sign-up error:", error);
+      setModalMessage("An error occurred during signup. Please try again.");
+      setShowModal(true);
     } finally {
       setIsLoading(false);
     }
   };
+  
+  
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -174,8 +183,8 @@ function LoginSignup() {
        {/* Animated Checkmark Modal */}
        {showLikeConfirmation && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-            <div className="text-green-500 mb-4">
+          <div className="bg-white p-6 rounded-lg shadow-lg text-center flex flex-col justify-center">
+            <div className="relative left-12 text-green-500 mb-4">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="w-16 h-16 animate-bounce"
@@ -215,12 +224,15 @@ function LoginSignup() {
 
   <div className="relative h-full w-full">
     <div
-      className={`absolute h-full w-1/2 bg-white flex items-center justify-center transition-transform duration-700 ease-in-out ${
+      className={`absolute left h-full w-1/2 bg-white flex items-center justify-center transition-transform duration-700 ease-in-out ${
         isSignUp ? "translate-x-full" : "translate-x-0"
       }`}
     >
-      <img src={logo2} className="relative bottom-72 right-[4rem]" />
-      <div className="text-center flex flex-col mt-[10.8rem] gap-20">
+      <div className="relative bottom-[17rem] flex justify-center items-center">
+      <img src={logo2} />
+      <h1 className="text-friezGreen text-2xl font-bold relative top-1">FriseUp</h1>
+      </div>
+      <div className="text-center flex flex-col mt-[10.8rem] gap-20 relative right-[5.3rem]">
         <div className="flex flex-col">
           <h1 className="text-orange-500 text-6xl font-bold">
             {isSignUp ? "Join our family!" : "Welcome Back!"}
@@ -359,6 +371,7 @@ function LoginSignup() {
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
                   className="w-full border rounded-lg px-3 py-2"
+                  disabled
                 >
                   <option value="customer">Customer</option>
                 </select>

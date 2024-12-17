@@ -10,12 +10,15 @@ import NotificationPage from './components/Customer/Notification/NotificationPag
 import NotificationDetail from './components/Customer/Notification/NotificationDetail';
 import EditProfile from './components/Customer/EditProfile/EditProfile';
 import ViewProfile from './components/Customer/ViewProfile/ViewProfile';
+import LandingPage from './components/Landing/LandingPage';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<LoginSignup />} />
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/signup" element={<LoginSignup />} />
+        {/* <Route path="/" element={<LoginSignup />} /> */} 
         <Route path="/AdminDashboard" element={<SideBar />} />
         <Route path="/Customer" element={<CustomerPage />} />
         <Route path="/Customer/view-reviews" element={<ViewReviews />} />

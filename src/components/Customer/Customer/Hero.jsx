@@ -6,7 +6,7 @@ import product2 from '../../../assets/product2.png';
 import product3 from '../../../assets/product3.png';
 import product4 from '../../../assets/product4.png';
 import CustomerModal from '../Customer/CustomerModal';
-import ReportModal from '../../Customer/Customer/ReportModal'
+import ReportModal from '../../Customer/Customer/ReportModal';
 import axios from 'axios';
 
 const Hero = () => {
@@ -95,28 +95,31 @@ const Hero = () => {
   };
 
   return (
-    <div className="p-8 px-44">
-      <div className="text-left mb-6 mt-20">
-        <h1 className="text-3xl font-bold mb-2">Hello, {firstName}</h1>
-        <p className="text-md text-gray-600">Enjoy our mouth-watering carrot fries at affordable prices</p>
+    <div className="p-4 md:p-8 md:px-44">
+      <div className="text-left mb-6 mt-20 md:mt-20">
+        <h1 className="text-2xl md:text-3xl font-bold mb-2">Hello, {firstName}!</h1>
+        <p className="text-sm md:text-md text-gray-600">
+          Enjoy our mouth-watering carrot fries at affordable prices
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 gap-y-14">
+      {/* Grid Layout: 2 products per row */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-6 gap-y-10">
         {products.map((product) => (
           <div key={product.id} className="flex flex-col gap-4 border rounded-lg shadow-lg p-4">
-            <img src={product.image} alt={product.name} className="mx-auto mb-4 w-90" />
+            <img src={product.image} alt={product.name} className="mx-auto mb-4 w-full h-48 object-contain" />
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-4">
-                <h2 className="text-lg font-semibold">{product.name}</h2>
-                <p className="text-green-500 font-semibold text-lg">
-                  <span className="text-black text-base">{product.rating}</span> ★
+                <h2 className="text-base md:text-lg font-semibold">{product.name}</h2>
+                <p className="text-green-500 font-semibold text-base">
+                  <span className="text-black text-sm">{product.rating}</span> ★
                 </p>
               </div>
               <div className="flex items-center gap-2">
                 <FaHeart
-                  className={`cursor-pointer text-lg transform ${likedProducts[product.id] ? 'text-green-500' : 'text-gray-400'} ${
-                    animateHeart[product.id] ? 'animate-beat' : ''
-                  }`}
+                  className={`cursor-pointer text-lg transform ${
+                    likedProducts[product.id] ? 'text-green-500' : 'text-gray-400'
+                  } ${animateHeart[product.id] ? 'animate-beat' : ''}`}
                   onClick={() => toggleLike(product.id)}
                 />
                 <FaExclamationTriangle
@@ -153,7 +156,7 @@ const Hero = () => {
         />
       )}
 
-   
+      {/* Report Modal */}
       <ReportModal isOpen={isReportModalOpen} onClose={() => setIsReportModalOpen(false)} />
     </div>
   );

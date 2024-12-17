@@ -89,7 +89,7 @@ const DashboardPage = () => {
 
       <h1 className="font-bold text-2xl mt-6">Dashboard</h1>
 
-      <div className="flex gap-5 justify-center w-full">
+      <div className="flex gap-5 justify-center w-full items-stretch">
         <Card
           title="Total Earnings"
           subTitle={`₱ ${totalEarnings.toLocaleString()}`}
@@ -107,6 +107,7 @@ const DashboardPage = () => {
           showlinkText={false}
         />
       </div>
+
 
       <div className="flex gap-5 w-full mt-6 h-full">
         <div className="flex flex-col w-full lg:w-1/2 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
